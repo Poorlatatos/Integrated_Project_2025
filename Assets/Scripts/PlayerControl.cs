@@ -53,7 +53,7 @@ public class PlayerControl : MonoBehaviour
     void Update()
     {
         // Sprint timer logic
-        if (isSprinting && !isCrouching && moveInput.y > 0f)
+        if (isSprinting && !isCrouching && moveInput.magnitude > 0f)
         {
             sprintTimer -= Time.deltaTime;
             if (sprintTimer < 0f)
