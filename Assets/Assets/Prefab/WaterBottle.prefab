@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4688543632215167014}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: WaterBottle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,6 +96,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: solo_WaterBottle
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3451118302482216456, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}
       propertyPath: m_Convex
       value: 1
@@ -103,8 +107,43 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 546878441387871934}
   m_SourcePrefab: {fileID: 100100000, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}
+--- !u!1 &8412576277473903955 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}
+  m_PrefabInstance: {fileID: 8682395121569298434}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &546878441387871934
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8412576277473903955}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &9220180300125282281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 786523ff4482e1041a1f7c91c07f992a, type: 3}

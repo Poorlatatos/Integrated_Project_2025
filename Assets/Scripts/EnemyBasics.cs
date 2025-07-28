@@ -15,12 +15,20 @@ public class EnemyBasics : MonoBehaviour
 
     [Header("Detection Settings")]
     public float detectionRadius = 10f;
+    public float detectionAngle = 60f; // Field of view in degrees
     public LayerMask detectionLayerMask;
     public LayerMask obstructionMask;
 
     private NavMeshAgent agent;
     private int patrolIndex = 0;
     private float idleTimer = 0f;
+
+    public float chaseTimeout = 3f; // How long to keep chasing after losing sight
+    private float chaseTimer = 0f;
+
+    [Header("Special Patrol Point")]
+    public int specialPatrolIndex = 0; // Set this to the index of the special patrol point in the Inspector
+    public float specialIdleTime = 5f; // How long to idle at the special point
 
     void Start()
     {
@@ -39,17 +47,28 @@ public class EnemyBasics : MonoBehaviour
             case State.Patrolling:
                 Patrol();
                 if (canSeePlayer && distanceToPlayer < detectionRadius)
+                {
                     currentState = State.Chasing;
+                    chaseTimer = chaseTimeout; // Start the chase timer
+                }
                 break;
 
             case State.Chasing:
                 Chase();
-                if (!canSeePlayer || distanceToPlayer > stopChaseDistance)
+                if (canSeePlayer)
                 {
-                    patrolIndex = GetNearestPatrolPointIndex();
-                    currentState = State.Patrolling;
-                    if (patrolPoints.Length > 0)
-                        agent.SetDestination(patrolPoints[patrolIndex].position);
+                    chaseTimer = chaseTimeout; // Reset timer if player is seen
+                }
+                else
+                {
+                    chaseTimer -= Time.deltaTime;
+                    if (chaseTimer <= 0f || distanceToPlayer > stopChaseDistance)
+                    {
+                        patrolIndex = GetNearestPatrolPointIndex();
+                        currentState = State.Patrolling;
+                        if (patrolPoints.Length > 0)
+                            agent.SetDestination(patrolPoints[patrolIndex].position);
+                    }
                 }
                 break;
 
@@ -58,7 +77,6 @@ public class EnemyBasics : MonoBehaviour
                 break;
         }
     }
-
     int GetNearestPatrolPointIndex()
     {
         int nearestIndex = 0;
@@ -77,26 +95,40 @@ public class EnemyBasics : MonoBehaviour
 
     bool CanSeePlayer()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        Vector3 enemyEyePos = transform.position + Vector3.up * 1.5f;
+        Vector3 playerHeadPos = player.position + Vector3.up * 1.0f;
+        Vector3 dirToPlayer = (playerHeadPos - enemyEyePos);
+        float distanceToPlayer = dirToPlayer.magnitude;
+
+        // Draw the ray to the player
+        Debug.DrawLine(enemyEyePos, playerHeadPos, Color.yellow);
+
         if (distanceToPlayer > detectionRadius)
             return false;
 
-        Vector3 enemyEyePos = transform.position + Vector3.up * 1.5f;
-        Vector3 playerHeadPos = player.position + Vector3.up * 1.0f;
-        Vector3 dirToPlayer = (playerHeadPos - enemyEyePos).normalized;
-        Ray ray = new Ray(enemyEyePos, dirToPlayer);
+        // Angle check (cone)
+        dirToPlayer.Normalize();
+        Vector3 forward = transform.forward;
+        float angleToPlayer = Vector3.Angle(forward, dirToPlayer);
 
+        // Draw the cone boundaries
+        Quaternion leftRayRotation = Quaternion.AngleAxis(-detectionAngle * 0.5f, Vector3.up);
+        Quaternion rightRayRotation = Quaternion.AngleAxis(detectionAngle * 0.5f, Vector3.up);
+        Vector3 leftRayDirection = leftRayRotation * forward;
+        Vector3 rightRayDirection = rightRayRotation * forward;
+        Debug.DrawRay(enemyEyePos, leftRayDirection * detectionRadius, Color.cyan);
+        Debug.DrawRay(enemyEyePos, rightRayDirection * detectionRadius, Color.cyan);
+
+        if (angleToPlayer > detectionAngle * 0.5f)
+            return false;
+
+        // Line of sight check
+        Ray ray = new Ray(enemyEyePos, dirToPlayer);
         if (Physics.Raycast(ray, out RaycastHit hit, detectionRadius, detectionLayerMask | obstructionMask))
         {
-            Debug.Log("Raycast hit: " + hit.transform.name + " on layer " + LayerMask.LayerToName(hit.transform.gameObject.layer));
-            Debug.DrawLine(ray.origin, hit.point, Color.red, 0.1f);
+            Debug.DrawLine(enemyEyePos, hit.point, hit.transform == player ? Color.green : Color.red);
             if (hit.transform == player)
                 return true;
-        }
-        else
-        {
-            Debug.Log("Raycast hit nothing.");
-            Debug.DrawRay(ray.origin, ray.direction * detectionRadius, Color.yellow, 0.1f);
         }
         return false;
     }
@@ -127,7 +159,10 @@ public class EnemyBasics : MonoBehaviour
         idleTimer += Time.deltaTime;
         transform.Rotate(Vector3.up, idleRotationSpeed * Time.deltaTime);
 
-        if (idleTimer >= idleTime)
+        // Use special idle time if at the special patrol point
+        float currentIdleTime = (patrolIndex == specialPatrolIndex) ? specialIdleTime : idleTime;
+
+        if (idleTimer >= currentIdleTime)
         {
             // Randomize next patrol point (not the same as current)
             int nextIndex = patrolIndex;
