@@ -15,7 +15,7 @@ public class FirstPersonCamera : MonoBehaviour
 
     [Header("Item Hold")]
     public Transform handTransform; // Assign a child transform (e.g. "Hand") to the camera in Inspector
-    private GameObject heldItem;
+    public GameObject heldItem;
 
     void Start()
     {
