@@ -23,7 +23,7 @@ public class PlayerControl : MonoBehaviour
     public float sprintDuration = 3f; // seconds of sprint available
     public float sprintRechargeRate = 1f; // seconds to recharge 1 second of sprint
     public float sprintTimer;
-    bool isSprinting = false;
+    public bool isSprinting = false;
 
     void Awake()
     {

@@ -17,9 +17,22 @@ public class FirstPersonCamera : MonoBehaviour
     public Transform handTransform; // Assign a child transform (e.g. "Hand") to the camera in Inspector
     public GameObject heldItem;
 
+    [Header("FOV Sprint Effect")]
+    public float normalFOV = 60f;
+    public float sprintFOV = 75f;
+    public float fovTransitionSpeed = 8f;
+    public PlayerControl playerControl; // Assign your PlayerControl in the Inspector
+
+    Camera cam;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        cam = GetComponent<Camera>();
+        if (cam == null)
+            cam = GetComponentInChildren<Camera>();
+        if (cam != null)
+            cam.fieldOfView = normalFOV;
     }
 
     void Update()
@@ -33,6 +46,13 @@ public class FirstPersonCamera : MonoBehaviour
         playerBody.Rotate(Vector3.up * mouseDelta.x);
 
         DetectItem();
+
+        // FOV Sprint Effect
+        if (cam != null && playerControl != null)
+        {
+            float targetFOV = playerControl.isSprinting ? sprintFOV : normalFOV;
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * fovTransitionSpeed);
+        }
     }
 
     void DetectItem()
