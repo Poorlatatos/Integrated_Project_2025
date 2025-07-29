@@ -74,6 +74,7 @@ public class FirstPersonCamera : MonoBehaviour
                 heldItem.transform.SetParent(handTransform);
                 heldItem.transform.localPosition = Vector3.zero;
                 heldItem.transform.localRotation = Quaternion.identity;
+                FindObjectOfType<ParanoiaMeter>()?.IncreaseParanoia();
                 Debug.Log("Item picked up!");
             }
         }

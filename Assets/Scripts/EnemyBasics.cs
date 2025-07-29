@@ -93,7 +93,7 @@ public class EnemyBasics : MonoBehaviour
         return nearestIndex;
     }
 
-    bool CanSeePlayer()
+    public bool CanSeePlayer()
     {
         Vector3 enemyEyePos = transform.position + Vector3.up * 1.5f;
         Vector3 playerHeadPos = player.position + Vector3.up * 1.0f;
