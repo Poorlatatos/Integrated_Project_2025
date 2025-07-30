@@ -3,8 +3,8 @@ using UnityEngine.AI;
 
 public class EnemyBasics : MonoBehaviour
 {
-    public enum State { Patrolling, Chasing, Idle }
-    public State currentState = State.Patrolling;
+    public enum State { Inactive, Patrolling, Chasing, Idle }
+    public State currentState = State.Inactive;
 
     public Transform[] patrolPoints;
     public float idleTime = 2f;
@@ -19,12 +19,12 @@ public class EnemyBasics : MonoBehaviour
     public LayerMask detectionLayerMask;
     public LayerMask obstructionMask;
 
-    private NavMeshAgent agent;
-    private int patrolIndex = 0;
-    private float idleTimer = 0f;
+    public NavMeshAgent agent;
+    public int patrolIndex = 0;
+    public float idleTimer = 0f;
 
     public float chaseTimeout = 3f; // How long to keep chasing after losing sight
-    private float chaseTimer = 0f;
+    public float chaseTimer = 0f;
 
     [Header("Special Patrol Point")]
     public int specialPatrolIndex = 0; // Set this to the index of the special patrol point in the Inspector
@@ -39,6 +39,9 @@ public class EnemyBasics : MonoBehaviour
 
     void Update()
     {
+        if (currentState == State.Inactive)
+            return; // Do nothing if inactive
+
         bool canSeePlayer = CanSeePlayer();
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
@@ -77,7 +80,7 @@ public class EnemyBasics : MonoBehaviour
                 break;
         }
     }
-    int GetNearestPatrolPointIndex()
+    public int GetNearestPatrolPointIndex()
     {
         int nearestIndex = 0;
         float minDist = Mathf.Infinity;
@@ -178,6 +181,22 @@ public class EnemyBasics : MonoBehaviour
             patrolIndex = nextIndex;
             currentState = State.Patrolling;
             agent.SetDestination(patrolPoints[patrolIndex].position);
+        }
+    }
+
+    // If using triggers instead of collisions:
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Enemy trigger entered by: " + other.name + " | Tag: " + other.tag);
+
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Enemy touched player!");
+            JumpscareManager jm = FindObjectOfType<JumpscareManager>();
+            if (jm != null)
+                jm.TriggerJumpscare();
+            else
+                Debug.LogWarning("JumpscareManager not found!");
         }
     }
 }

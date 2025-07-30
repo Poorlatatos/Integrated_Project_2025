@@ -29,8 +29,17 @@ public class ParanoiaMeter : MonoBehaviour
         if (paranoiaSlider != null)
             paranoiaSlider.value = paranoia;
 
-        // Check if enemy can see the player
-        if (enemy != null && enemy.CanSeePlayer())
+        // Activate enemy if not already active
+        if (enemy != null && enemy.currentState == EnemyBasics.State.Inactive)
+        {
+            enemy.currentState = EnemyBasics.State.Patrolling;
+            // Optionally, set the enemy to start patrolling from the nearest point
+            enemy.patrolIndex = enemy.GetNearestPatrolPointIndex();
+            enemy.agent.SetDestination(enemy.patrolPoints[enemy.patrolIndex].position);
+        }
+
+        // If enemy is active and can see the player, start chasing
+        if (enemy != null && enemy.currentState != EnemyBasics.State.Inactive && enemy.CanSeePlayer())
         {
             enemy.currentState = EnemyBasics.State.Chasing;
             // Optionally reset chase timer if needed

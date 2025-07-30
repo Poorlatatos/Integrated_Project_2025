@@ -63,7 +63,7 @@ public class FirstPersonCamera : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, itemDetectDistance, itemLayer))
         {
-            Debug.Log("Item detected: " + hit.collider.name);
+            //Debug.Log("Item detected: " + hit.collider.name);
 
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
