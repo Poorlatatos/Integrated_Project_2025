@@ -7,7 +7,8 @@ public class JumpscareManager : MonoBehaviour
     public float shakeDuration = 1f;
     public float shakeMagnitude = 0.5f;
     public GameObject jumpscareUI; // Assign a UI panel or image for jumpscare
-
+    public MonoBehaviour playerControlScript; // Assign the movement script in the Inspector
+    public Transform enemyTransform; // Assign an enemy transform to shake camera towards
     private Vector3 originalCamPos;
     private bool isShaking = false;
     private float shakeTimer = 0f;
@@ -28,7 +29,11 @@ public class JumpscareManager : MonoBehaviour
         originalCamPos = playerCamera.transform.localPosition;
         isShaking = true;
         shakeTimer = shakeDuration;
-        // Optionally: freeze player controls here
+
+        // Freeze player controls
+        if (playerControlScript != null)
+            playerControlScript.enabled = false;
+
         Invoke(nameof(GameOver), shakeDuration);
     }
 
@@ -36,6 +41,14 @@ public class JumpscareManager : MonoBehaviour
     {
         if (isShaking)
         {
+            if (enemyTransform != null)
+            {
+                // Look at the enemy (lock camera)
+                Vector3 dir = (enemyTransform.position - playerCamera.transform.position).normalized;
+                Quaternion lookRot = Quaternion.LookRotation(dir, Vector3.up);
+                playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, lookRot, Time.deltaTime * 8f);
+            }
+
             if (shakeTimer > 0)
             {
                 playerCamera.transform.localPosition = originalCamPos + Random.insideUnitSphere * shakeMagnitude;

@@ -185,11 +185,11 @@ public class EnemyBasics : MonoBehaviour
     }
 
     // If using triggers instead of collisions:
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Enemy trigger entered by: " + other.name + " | Tag: " + other.tag);
+        Debug.Log("Enemy collided with: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
 
-        if (other.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("Enemy touched player!");
             JumpscareManager jm = FindObjectOfType<JumpscareManager>();
