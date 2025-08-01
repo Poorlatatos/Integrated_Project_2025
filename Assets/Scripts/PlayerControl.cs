@@ -66,6 +66,23 @@ public class PlayerControl : MonoBehaviour
             if (sprintTimer > sprintDuration)
                 sprintTimer = sprintDuration;
         }
+        
+        if (isSprinting)
+        {
+            sprintTimer -= Time.deltaTime;
+            if (sprintTimer <= 0f)
+            {
+                sprintTimer = 0f;
+                isSprinting = false; // Force stop sprinting
+            }
+        }
+        else
+        {
+            // Regenerate stamina if not sprinting (optional)
+            if (sprintTimer < sprintDuration)
+                sprintTimer += Time.deltaTime;
+        }
+
     }
 
     public void OnMove(InputValue value)

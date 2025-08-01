@@ -45,12 +45,14 @@ public class FirstPersonCamera : MonoBehaviour
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         playerBody.Rotate(Vector3.up * mouseDelta.x);
 
+        // Item detection and pickup
+
         DetectItem();
 
         // FOV Sprint Effect
         if (cam != null && playerControl != null)
         {
-            float targetFOV = playerControl.isSprinting ? sprintFOV : normalFOV;
+            float targetFOV = (playerControl.isSprinting && playerControl.sprintTimer > 0f) ? sprintFOV : normalFOV;
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, targetFOV, Time.deltaTime * fovTransitionSpeed);
         }
     }
