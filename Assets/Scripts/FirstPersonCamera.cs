@@ -65,8 +65,6 @@ public class FirstPersonCamera : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, itemDetectDistance, itemLayer))
         {
-            //Debug.Log("Item detected: " + hit.collider.name);
-
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
                 // Pick up the item
@@ -76,8 +74,15 @@ public class FirstPersonCamera : MonoBehaviour
                 heldItem.transform.SetParent(handTransform);
                 heldItem.transform.localPosition = Vector3.zero;
                 heldItem.transform.localRotation = Quaternion.identity;
-                FindObjectOfType<ParanoiaMeter>()?.IncreaseParanoia();
+                FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
                 Debug.Log("Item picked up!");
+
+                // Only register/cross off if on the desired layer
+                int desiredLayer = LayerMask.NameToLayer("KeyItem"); 
+                if (heldItem.layer == desiredLayer)
+                {
+                    FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(heldItem.name);
+                }
             }
         }
     }

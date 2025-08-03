@@ -192,7 +192,7 @@ public class EnemyBasics : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("Enemy touched player!");
-            JumpscareManager jm = FindObjectOfType<JumpscareManager>();
+            JumpscareManager jm = FindFirstObjectByType<JumpscareManager>();
             if (jm != null)
                 jm.TriggerJumpscare();
             else

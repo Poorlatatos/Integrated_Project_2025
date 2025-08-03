@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections.Generic;
 public class RandomItemSpawner : MonoBehaviour
 {
     [Header("Assign all possible item prefabs here")]
@@ -39,9 +39,16 @@ public class RandomItemSpawner : MonoBehaviour
         }
 
         // Spawn items
+        List<GameObject> spawnedItems = new List<GameObject>();
         for (int i = 0; i < Mathf.Min(itemsToSpawn, shuffledPoints.Length, shuffledItems.Length); i++)
         {
-            Instantiate(shuffledItems[i], shuffledPoints[i].position, shuffledPoints[i].rotation);
+            GameObject spawned = Instantiate(shuffledItems[i], shuffledPoints[i].position, shuffledPoints[i].rotation);
+            spawned.name = shuffledItems[i].name;
+            spawnedItems.Add(spawned);
         }
+
+        // Notify ChecklistManager about the spawned items
+        FindFirstObjectByType<ChecklistManager>()?.PopulateChecklist(spawnedItems.ToArray());
     }
+    
 }
