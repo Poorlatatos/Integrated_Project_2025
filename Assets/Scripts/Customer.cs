@@ -156,4 +156,37 @@ public class Customer : MonoBehaviour
             agent.SetDestination(wanderPoints[currentWanderIndex].position);
         }
     }
+    public void TryReportPlayerStealing()
+    {
+        if (hasReported) return;
+
+        Vector3 toPlayer = player.position - transform.position;
+        float distance = toPlayer.magnitude;
+        if (distance <= detectionRadius)
+        {
+            float angle = Vector3.Angle(transform.forward, toPlayer.normalized);
+            if (angle <= detectionAngle * 0.5f)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up * 1.5f, toPlayer.normalized, distance, obstructionMask))
+                {
+                    Debug.Log("Customer SEES player stealing! Reporting...");
+                    hasReported = true;
+                    currentState = State.Reporting;
+                    agent.SetDestination(shopkeeper.transform.position);
+                }
+                else
+                {
+                    Debug.Log("Customer's view is blocked, does not report.");
+                }
+            }
+            else
+            {
+                Debug.Log("Player not in detection angle, does not report.");
+            }
+        }
+        else
+        {
+            Debug.Log("Player not in detection radius, does not report.");
+        }
+    }
 }

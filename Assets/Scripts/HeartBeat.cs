@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using System.Collections;
 public class HeartBeat : MonoBehaviour
 {
     [Header("Heart Beat Settings")]
@@ -10,7 +10,10 @@ public class HeartBeat : MonoBehaviour
 
     [Header("References")]
     public ParanoiaMeter paranoiaMeter; // Assign in Inspector
-
+    public CanvasGroup paranoiaFlashGroup; // Assign your ParanoiaFlashImage's CanvasGroup here
+    public float paranoiaFlashThreshold = 0.6f; // 60% paranoia
+    public float flashAlpha = 0.3f; // How visible the flash is
+    public float flashFadeTime = 0.15f; // How quickly the flash fades out
     private float beatTimer = 0f;
     private bool isBeating = false;
 
@@ -34,11 +37,21 @@ public class HeartBeat : MonoBehaviour
         }
     }
 
-    System.Collections.IEnumerator Beat(float targetScale)
+    IEnumerator Beat(float targetScale)
     {
         isBeating = true;
         Vector3 originalScale = transform.localScale;
         Vector3 beatScale = Vector3.one * targetScale;
+
+        // FLASH if paranoia is high enough
+        if (paranoiaMeter != null && paranoiaFlashGroup != null)
+        {
+            float paranoiaPercent = paranoiaMeter.paranoia / paranoiaMeter.maxParanoia;
+            if (paranoiaPercent >= paranoiaFlashThreshold)
+            {
+                StartCoroutine(FlashParanoiaImage());
+            }
+        }
 
         // Scale up
         float t = 0f;
@@ -61,5 +74,18 @@ public class HeartBeat : MonoBehaviour
         transform.localScale = originalScale;
 
         isBeating = false;
+    }
+
+    private IEnumerator FlashParanoiaImage()
+    {
+        paranoiaFlashGroup.alpha = flashAlpha;
+        float t = 0f;
+        while (t < flashFadeTime)
+        {
+            paranoiaFlashGroup.alpha = Mathf.Lerp(flashAlpha, 0f, t / flashFadeTime);
+            t += Time.deltaTime;
+            yield return null;
+        }
+        paranoiaFlashGroup.alpha = 0f;
     }
 }

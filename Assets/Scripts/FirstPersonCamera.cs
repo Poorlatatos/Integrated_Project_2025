@@ -59,6 +59,11 @@ public class FirstPersonCamera : MonoBehaviour
 
     void DetectItem()
     {
+        // Prevent pickup if checklist is open
+        var checklist = FindFirstObjectByType<ChecklistManager>();
+        if (checklist != null && checklist.IsChecklistOpen)
+            return;
+
         if (heldItem != null) return; // Already holding something
 
         Ray ray = new Ray(transform.position, transform.forward);
@@ -67,22 +72,36 @@ public class FirstPersonCamera : MonoBehaviour
         {
             if (Keyboard.current.eKey.wasPressedThisFrame)
             {
-                // Pick up the item
-                heldItem = hit.collider.gameObject;
-                heldItem.GetComponent<Rigidbody>().isKinematic = true;
-                heldItem.GetComponent<Collider>().enabled = false;
-                heldItem.transform.SetParent(handTransform);
-                heldItem.transform.localPosition = Vector3.zero;
-                heldItem.transform.localRotation = Quaternion.identity;
-                FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
-                Debug.Log("Item picked up!");
+                GameObject targetItem = hit.collider.gameObject;
+                int keyItemLayer = LayerMask.NameToLayer("KeyItem");
+                int itemsLayer = LayerMask.NameToLayer("Items");
 
-                // Only register/cross off if on the desired layer
-                int desiredLayer = LayerMask.NameToLayer("KeyItem"); 
-                if (heldItem.layer == desiredLayer)
+                // Notify all customers to check if they see the player stealing
+                foreach (var customer in FindObjectsOfType<Customer>())
                 {
-                    FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(heldItem.name);
+                    customer.TryReportPlayerStealing();
                 }
+
+                // If it's a KeyItem, cross off and destroy immediately
+                if (targetItem.layer == keyItemLayer)
+                {
+                    FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(targetItem.name);
+                    Destroy(targetItem);
+                    heldItem = null;
+                }
+                // If it's a regular Item, pick up and hold it
+                else if (targetItem.layer == itemsLayer)
+                {
+                    heldItem = targetItem;
+                    heldItem.GetComponent<Rigidbody>().isKinematic = true;
+                    heldItem.GetComponent<Collider>().enabled = false;
+                    heldItem.transform.SetParent(handTransform);
+                    heldItem.transform.localPosition = Vector3.zero;
+                    heldItem.transform.localRotation = Quaternion.identity;
+                    FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
+                    Debug.Log("Item picked up!");
+                }
+                // Otherwise, do nothing (not pick-up-able)
             }
         }
     }

@@ -8,6 +8,7 @@ public class JumpscareManager : MonoBehaviour
     public float shakeMagnitude = 0.5f;
     public GameObject jumpscareUI; // Assign a UI panel or image for jumpscare
     public MonoBehaviour playerControlScript; // Assign the movement script in the Inspector
+    public MonoBehaviour cameraLookScript;
     public Transform enemyTransform; // Assign an enemy transform to shake camera towards
     private Vector3 originalCamPos;
     private bool isShaking = false;
@@ -27,12 +28,23 @@ public class JumpscareManager : MonoBehaviour
         if (jumpscareUI != null)
             jumpscareUI.SetActive(true);
         originalCamPos = playerCamera.transform.localPosition;
+
+        // Instantly lock camera to enemy's head
+        if (enemyTransform != null)
+        {
+            Vector3 dir = (enemyTransform.position - playerCamera.transform.position).normalized;
+            Quaternion lookRot = Quaternion.LookRotation(dir, Vector3.up);
+            playerCamera.transform.rotation = lookRot;
+        }
+
         isShaking = true;
         shakeTimer = shakeDuration;
 
         // Freeze player controls
         if (playerControlScript != null)
             playerControlScript.enabled = false;
+        if (cameraLookScript != null)
+            cameraLookScript.enabled = false;
 
         Invoke(nameof(GameOver), shakeDuration);
     }

@@ -3,15 +3,24 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using TMPro;
+using System.Collections;
 
 public class ChecklistManager : MonoBehaviour
 {
     public CanvasGroup checklistCanvasGroup; // Assign the CanvasGroup of ChecklistPanel
     public Transform checklistContent;       // Assign ChecklistContent (the Vertical Layout Group)
     public GameObject checklistItemPrefab;   // Assign the ChecklistItem prefab (with TextMeshProUGUI)
+    public bool IsChecklistOpen => checklistCanvasGroup != null && checklistCanvasGroup.alpha > 0.5f;
 
     private Dictionary<string, TextMeshProUGUI> itemToText = new Dictionary<string, TextMeshProUGUI>();
     private InputAction toggleAction;
+
+    // For sliding animation
+    public RectTransform checklistPanelRect; // Assign the RectTransform of ChecklistPanel
+    public Vector2 hiddenPosition = new Vector2(0, -400); // Off-screen (adjust as needed)
+    public Vector2 shownPosition = new Vector2(0, 0);     // On-screen (adjust as needed)
+    public float slideDuration = 0.4f;
+    private Coroutine slideCoroutine;
 
     void Awake()
     {
@@ -30,9 +39,27 @@ public class ChecklistManager : MonoBehaviour
     void ToggleChecklist()
     {
         bool show = checklistCanvasGroup.alpha == 0;
-        checklistCanvasGroup.alpha = show ? 1 : 0;
+        if (slideCoroutine != null) StopCoroutine(slideCoroutine);
+        slideCoroutine = StartCoroutine(SlideChecklist(show));
         checklistCanvasGroup.interactable = show;
         checklistCanvasGroup.blocksRaycasts = show;
+    }
+
+    private IEnumerator SlideChecklist(bool show)
+    {
+        checklistCanvasGroup.alpha = 1; // Always visible during animation
+        Vector2 start = checklistPanelRect.anchoredPosition;
+        Vector2 end = show ? shownPosition : hiddenPosition;
+        float elapsed = 0f;
+        while (elapsed < slideDuration)
+        {
+            checklistPanelRect.anchoredPosition = Vector2.Lerp(start, end, elapsed / slideDuration);
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        checklistPanelRect.anchoredPosition = end;
+        if (!show)
+            checklistCanvasGroup.alpha = 0; // Hide after sliding out
     }
 
     // Called by RandomItemSpawner after spawning items
@@ -73,5 +100,16 @@ public class ChecklistManager : MonoBehaviour
         }
         // Cross it off
         CrossOffItem(itemName);
+    }
+
+    public bool AreAllItemsCollected()
+    {
+        foreach (var text in itemToText.Values)
+        {
+            // If the text is not crossed off (not gray), return false
+            if (text.color != Color.gray)
+                return false;
+        }
+        return true;
     }
 }
