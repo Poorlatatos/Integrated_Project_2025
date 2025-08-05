@@ -39,9 +39,16 @@ public class Customer : MonoBehaviour
 
     void Update()
     {
-        bool isWalking = agent.velocity.magnitude > 0.1f && (currentState == State.Wandering || currentState == State.Reporting);
+        bool isWalking = agent.velocity.magnitude > 0.1f && (currentState == State.Wandering || currentState == State.Glancing);
         animator.SetBool("isWalking", isWalking);
-        
+
+        // Play idle animation when glancing
+        animator.SetBool("isIdle", currentState == State.Glancing);
+
+        // Play running animation when reporting
+        bool isRunning = currentState == State.Reporting && agent.velocity.magnitude > 0.1f;
+        animator.SetBool("isRunning", isRunning);
+
         switch (currentState)
         {
             case State.Wandering:
