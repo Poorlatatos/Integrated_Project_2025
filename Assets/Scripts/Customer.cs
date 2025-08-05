@@ -23,13 +23,15 @@ public class Customer : MonoBehaviour
     private bool isGlancing = false;
     private float glanceDirection = 1f;
     private bool hasReported = false;
-
+    public Animator animator;
+    private Vector3 lastPosition;
     private enum State { Wandering, Glancing, Reporting }
     private State currentState = State.Wandering;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        lastPosition = transform.position;
         agent.speed = wanderSpeed;
         if (wanderPoints.Length > 0)
             agent.SetDestination(wanderPoints[0].position);
@@ -37,6 +39,9 @@ public class Customer : MonoBehaviour
 
     void Update()
     {
+        bool isWalking = agent.velocity.magnitude > 0.1f && (currentState == State.Wandering || currentState == State.Reporting);
+        animator.SetBool("isWalking", isWalking);
+        
         switch (currentState)
         {
             case State.Wandering:
