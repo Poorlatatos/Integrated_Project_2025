@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using TMPro;
 public class FirstPersonCamera : MonoBehaviour
 {
     public Transform playerBody;
@@ -12,6 +12,7 @@ public class FirstPersonCamera : MonoBehaviour
     [Header("Item Detection")]
     public float itemDetectDistance = 3f;
     public LayerMask itemLayer;
+    public TextMeshProUGUI pickupPromptText; // Assign in Inspector
 
     [Header("Item Hold")]
     public Transform handTransform; // Assign a child transform (e.g. "Hand") to the camera in Inspector
@@ -59,55 +60,70 @@ public class FirstPersonCamera : MonoBehaviour
 
     void DetectItem()
     {
+        // Hide prompt by default
+        if (pickupPromptText != null)
+            pickupPromptText.enabled = false;
+
         // Prevent pickup if checklist is open
         var checklist = FindFirstObjectByType<ChecklistManager>();
         if (checklist != null && checklist.IsChecklistOpen)
             return;
 
-        if (heldItem != null) return; // Already holding something
+        // Don't allow pickup if already holding something
+        if (heldItem != null)
+            return;
 
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, itemDetectDistance, itemLayer))
         {
-            if (Keyboard.current.eKey.wasPressedThisFrame)
+            GameObject targetItem = hit.collider.gameObject;
+            int keyItemLayer = LayerMask.NameToLayer("KeyItem");
+            int itemsLayer = LayerMask.NameToLayer("Items");
+
+            // Only show prompt if it's a valid pickup
+            if (targetItem.layer == keyItemLayer || targetItem.layer == itemsLayer)
             {
-                GameObject targetItem = hit.collider.gameObject;
-                int keyItemLayer = LayerMask.NameToLayer("KeyItem");
-                int itemsLayer = LayerMask.NameToLayer("Items");
+                if (pickupPromptText != null)
+                    pickupPromptText.enabled = true;
 
-                // Notify all customers to check if they see the player stealing
-                foreach (var customer in FindObjectsOfType<Customer>())
+                if (Keyboard.current.eKey.wasPressedThisFrame)
                 {
-                    customer.TryReportPlayerStealing();
-                }
+                    // Notify all customers to check if they see the player stealing
+                    foreach (var customer in FindObjectsOfType<Customer>())
+                        customer.TryReportPlayerStealing();
 
-                // If it's a KeyItem, cross off and destroy immediately
-                if (targetItem.layer == keyItemLayer)
-                {
-                    FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(targetItem.name);
-                    Destroy(targetItem);
-                    heldItem = null;
+                    // If it's a KeyItem, cross off and destroy immediately
+                    if (targetItem.layer == keyItemLayer)
+                    {
+                        FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(targetItem.name);
+                        FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia(); // <-- Add this line
+                        Destroy(targetItem);
+                        heldItem = null;
+                    }
+                    // If it's a regular Item, pick up and hold it
+                    else if (targetItem.layer == itemsLayer)
+                    {
+                        heldItem = targetItem;
+                        heldItem.GetComponent<Rigidbody>().isKinematic = true;
+                        heldItem.GetComponent<Collider>().enabled = false;
+                        heldItem.transform.SetParent(handTransform);
+                        heldItem.transform.localPosition = Vector3.zero;
+                        heldItem.transform.localRotation = Quaternion.identity;
+                        FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
+                        Debug.Log("Item picked up!");
+                    }
+
+                    // Hide prompt after pickup
+                    if (pickupPromptText != null)
+                        pickupPromptText.enabled = false;
                 }
-                // If it's a regular Item, pick up and hold it
-                else if (targetItem.layer == itemsLayer)
-                {
-                    heldItem = targetItem;
-                    heldItem.GetComponent<Rigidbody>().isKinematic = true;
-                    heldItem.GetComponent<Collider>().enabled = false;
-                    heldItem.transform.SetParent(handTransform);
-                    heldItem.transform.localPosition = Vector3.zero;
-                    heldItem.transform.localRotation = Quaternion.identity;
-                    FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
-                    Debug.Log("Item picked up!");
-                }
-                // Otherwise, do nothing (not pick-up-able)
             }
         }
     }
 
     // Optional: Drop item with another key (e.g. Q)
-    void LateUpdate()
+        void LateUpdate()
     {
         if (heldItem != null && Keyboard.current.qKey.wasPressedThisFrame)
         {

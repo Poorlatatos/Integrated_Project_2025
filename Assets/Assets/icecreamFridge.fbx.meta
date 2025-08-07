@@ -3,7 +3,22 @@ guid: 1538e82f88cff794da2f322c6250cfc1
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: fridges
+    second: {fileID: 2100000, guid: c56aa2f3fe589ff46aaa215fdb0b1095, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: icecream
+    second: {fileID: 2100000, guid: 54a8dca758d46434493e15a43cfdce93, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: icecream7
+    second: {fileID: 2100000, guid: 54a8dca758d46434493e15a43cfdce93, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

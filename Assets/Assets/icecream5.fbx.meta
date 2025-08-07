@@ -3,7 +3,12 @@ guid: 19c473002eada554ba39ac4319d24dbe
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: icecream
+    second: {fileID: 2100000, guid: 54a8dca758d46434493e15a43cfdce93, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

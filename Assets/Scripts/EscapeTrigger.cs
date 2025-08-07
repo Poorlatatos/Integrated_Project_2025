@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using TMPro;
+using System.Collections;
 public class EscapeTrigger : MonoBehaviour
 {
     public GameObject[] hudObjects; // Assign all HUD GameObjects (e.g. ChecklistPanel, Heart, SprintUI, etc.)
@@ -18,6 +19,17 @@ public class EscapeTrigger : MonoBehaviour
     private bool fovChanging = false;
     private float fovLerpTime = 0f;
     private float startFOV = 0f;
+    public TextMeshProUGUI escapeText;
+
+    void Start()
+    {
+        if (escapeText != null)
+        {
+            var c = escapeText.color;
+            c.a = 0f;
+            escapeText.color = c;
+        }
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -44,6 +56,14 @@ public class EscapeTrigger : MonoBehaviour
                     fovChanging = true;
                 }
 
+                if (escapeText != null)
+                {
+                    var c = escapeText.color;
+                    c.a = 1f;
+                    escapeText.color = c;
+                    StartCoroutine(FlashEscapeText(3f, 4f)); // 3 seconds, flashes 4 times per second
+                }
+
                 Destroy(gameObject);
             }
         }
@@ -60,5 +80,25 @@ public class EscapeTrigger : MonoBehaviour
             if (t >= 1f)
                 fovChanging = false;
         }
+    }
+
+    private IEnumerator FlashEscapeText(float duration, float flashSpeed)
+    {
+        if (escapeText == null) yield break;
+        float timer = 0f;
+        while (timer < duration)
+        {
+            // Flash alpha between 0.2 and 1
+            float alpha = Mathf.Lerp(0.2f, 1f, Mathf.PingPong(Time.time * flashSpeed, 1f));
+            var color = escapeText.color;
+            color.a = alpha;
+            escapeText.color = color;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        // Hide after flashing
+        var c = escapeText.color;
+        c.a = 0f;
+        escapeText.color = c;
     }
 }

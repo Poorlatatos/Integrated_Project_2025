@@ -29,6 +29,14 @@ public class ChecklistManager : MonoBehaviour
         toggleAction.Enable();
 
         Debug.Log("ChecklistManager initialized. Press 'V' to toggle checklist visibility.");
+
+        // Hide checklist UI at startup
+        if (checklistCanvasGroup != null)
+        {
+            checklistCanvasGroup.alpha = 0;
+            checklistCanvasGroup.interactable = false;
+            checklistCanvasGroup.blocksRaycasts = false;
+        }
     }
 
     void OnDestroy()

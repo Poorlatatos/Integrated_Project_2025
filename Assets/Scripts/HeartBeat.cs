@@ -17,14 +17,22 @@ public class HeartBeat : MonoBehaviour
     private float beatTimer = 0f;
     private bool isBeating = false;
 
+    [Header("Flash Settings")]
+    public float flashInterval = 1.0f; // How often to flash (seconds)
+    private Coroutine flashCoroutine;
+
+    void Start()
+    {
+        if (paranoiaFlashGroup != null)
+            paranoiaFlashGroup.alpha = 0f;
+    }
     void Update()
     {
         if (paranoiaMeter == null) return;
 
-        // Calculate paranoia percent (0 to 1)
         float paranoiaPercent = paranoiaMeter.paranoia / paranoiaMeter.maxParanoia;
 
-        // Interpolate beat speed and scale
+        // Heartbeat logic (unchanged)
         float beatSpeed = Mathf.Lerp(minBeatSpeed, maxBeatSpeed, paranoiaPercent);
         float targetScale = Mathf.Lerp(minScale, maxScale, paranoiaPercent);
 
@@ -35,6 +43,23 @@ public class HeartBeat : MonoBehaviour
             if (!isBeating)
                 StartCoroutine(Beat(targetScale));
         }
+
+        // Flashing logic
+        if (paranoiaPercent >= paranoiaFlashThreshold)
+        {
+            if (flashCoroutine == null)
+                flashCoroutine = StartCoroutine(FlashingRoutine());
+        }
+        else
+        {
+            if (flashCoroutine != null)
+            {
+                StopCoroutine(flashCoroutine);
+                flashCoroutine = null;
+                if (paranoiaFlashGroup != null)
+                    paranoiaFlashGroup.alpha = 0f;
+            }
+        }
     }
 
     IEnumerator Beat(float targetScale)
@@ -42,16 +67,6 @@ public class HeartBeat : MonoBehaviour
         isBeating = true;
         Vector3 originalScale = transform.localScale;
         Vector3 beatScale = Vector3.one * targetScale;
-
-        // FLASH if paranoia is high enough
-        if (paranoiaMeter != null && paranoiaFlashGroup != null)
-        {
-            float paranoiaPercent = paranoiaMeter.paranoia / paranoiaMeter.maxParanoia;
-            if (paranoiaPercent >= paranoiaFlashThreshold)
-            {
-                StartCoroutine(FlashParanoiaImage());
-            }
-        }
 
         // Scale up
         float t = 0f;
@@ -87,5 +102,25 @@ public class HeartBeat : MonoBehaviour
             yield return null;
         }
         paranoiaFlashGroup.alpha = 0f;
+    }
+
+    private IEnumerator FlashingRoutine()
+    {
+        while (true)
+        {
+            if (paranoiaFlashGroup != null)
+            {
+                paranoiaFlashGroup.alpha = flashAlpha;
+                float t = 0f;
+                while (t < flashFadeTime)
+                {
+                    paranoiaFlashGroup.alpha = Mathf.Lerp(flashAlpha, 0f, t / flashFadeTime);
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+                paranoiaFlashGroup.alpha = 0f;
+            }
+            yield return new WaitForSeconds(flashInterval);
+        }
     }
 }

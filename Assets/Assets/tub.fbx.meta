@@ -3,7 +3,12 @@ guid: 546e9935ee67c3845a275cb3d3afb1d2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: milkk
+    second: {fileID: 2100000, guid: f0c23c86f25eb314e9c9317f683c2aee, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
