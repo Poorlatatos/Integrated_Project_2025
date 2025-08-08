@@ -29,6 +29,7 @@ public class EnemyBasics : MonoBehaviour
     [Header("Special Patrol Point")]
     public int specialPatrolIndex = 0; // Set this to the index of the special patrol point in the Inspector
     public float specialIdleTime = 5f; // How long to idle at the special point
+    public Animator animator;
 
     void Start()
     {
@@ -41,6 +42,14 @@ public class EnemyBasics : MonoBehaviour
     {
         if (currentState == State.Inactive)
             return; // Do nothing if inactive
+
+        // Set walking animation based on movement and state
+        bool isWalking = (currentState == State.Patrolling || currentState == State.Chasing) && agent.velocity.magnitude > 0.1f;
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", isWalking);
+            animator.SetBool("isIdle", currentState == State.Idle);
+        }
 
         bool canSeePlayer = CanSeePlayer();
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
@@ -80,6 +89,7 @@ public class EnemyBasics : MonoBehaviour
                 break;
         }
     }
+    
     public int GetNearestPatrolPointIndex()
     {
         int nearestIndex = 0;

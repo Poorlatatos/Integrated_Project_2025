@@ -37,6 +37,11 @@ public class EscapeTrigger : MonoBehaviour
         {
             if (checklistManager != null && checklistManager.AreAllItemsCollected())
             {
+                if (escapeText != null)
+                {
+                    StartCoroutine(FlashEscapeText(3f, 4f)); // 3 seconds, flashes 4 times per second
+                }
+
                 foreach (var obj in hudObjects)
                     if (obj != null) obj.SetActive(false);
 
@@ -54,14 +59,6 @@ public class EscapeTrigger : MonoBehaviour
                     startFOV = playerCamera.fieldOfView;
                     fovLerpTime = 0f;
                     fovChanging = true;
-                }
-
-                if (escapeText != null)
-                {
-                    var c = escapeText.color;
-                    c.a = 1f;
-                    escapeText.color = c;
-                    StartCoroutine(FlashEscapeText(3f, 4f)); // 3 seconds, flashes 4 times per second
                 }
 
                 Destroy(gameObject);

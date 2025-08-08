@@ -7,6 +7,7 @@ using System.Collections;
 
 public class ChecklistManager : MonoBehaviour
 {
+    public DoorOpener doorToOpen;
     public CanvasGroup checklistCanvasGroup; // Assign the CanvasGroup of ChecklistPanel
     public Transform checklistContent;       // Assign ChecklistContent (the Vertical Layout Group)
     public GameObject checklistItemPrefab;   // Assign the ChecklistItem prefab (with TextMeshProUGUI)
@@ -93,6 +94,12 @@ public class ChecklistManager : MonoBehaviour
         {
             text.text = $"<s>{itemName}</s>"; // Strikethrough using TMP rich text
             text.color = Color.gray;
+        }
+
+        // Check if all items are collected and open the door
+        if (AreAllItemsCollected() && doorToOpen != null)
+        {
+            doorToOpen.OpenDoor();
         }
     }
 
