@@ -21,6 +21,10 @@ public class HeartBeat : MonoBehaviour
     public float flashInterval = 1.0f; // How often to flash (seconds)
     private Coroutine flashCoroutine;
 
+    [Header("Audio")]
+    public AudioSource audioSource; // Assign in Inspector
+    public AudioClip heartBeatClip; // Assign in Inspector
+
     void Start()
     {
         if (paranoiaFlashGroup != null)
@@ -67,6 +71,10 @@ public class HeartBeat : MonoBehaviour
         isBeating = true;
         Vector3 originalScale = transform.localScale;
         Vector3 beatScale = Vector3.one * targetScale;
+
+        // Play heartbeat sound
+        if (audioSource != null && heartBeatClip != null)
+            audioSource.PlayOneShot(heartBeatClip);
 
         // Scale up
         float t = 0f;

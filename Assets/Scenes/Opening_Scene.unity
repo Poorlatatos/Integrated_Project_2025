@@ -1319,6 +1319,7 @@ GameObject:
   - component: {fileID: 1094450230}
   - component: {fileID: 1094450229}
   - component: {fileID: 1094450228}
+  - component: {fileID: 1094450232}
   m_Layer: 5
   m_Name: Main Menu
   m_TagString: Untagged
@@ -1387,7 +1388,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!224 &1094450231
 RectTransform:
@@ -1410,6 +1411,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!225 &1094450232
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1094450227}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1105366259
 GameObject:
   m_ObjectHideFlags: 0

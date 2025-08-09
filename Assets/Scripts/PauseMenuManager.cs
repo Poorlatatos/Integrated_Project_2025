@@ -38,7 +38,7 @@ public class PauseMenuManager : MonoBehaviour
         if (audioSlider != null && audioValueText != null)
         {
             float volume;
-            masterMixer.GetFloat("MasterVolume", out volume);
+            masterMixer.GetFloat("Master", out volume);
             audioSlider.value = Mathf.Pow(10, volume / 20f); // Convert dB to [0,1]
             audioSlider.onValueChanged.AddListener(SetVolume);
             audioValueText.text = Mathf.RoundToInt(audioSlider.value * 100).ToString();
