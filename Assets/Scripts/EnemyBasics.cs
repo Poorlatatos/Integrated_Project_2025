@@ -35,7 +35,18 @@ public class EnemyBasics : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         if (patrolPoints.Length > 0)
-            agent.SetDestination(patrolPoints[patrolIndex].position);
+        {
+            // Place at special patrol point if inactive
+            if (currentState == State.Inactive)
+            {
+                transform.position = patrolPoints[specialPatrolIndex].position;
+                agent.Warp(patrolPoints[specialPatrolIndex].position);
+            }
+            else
+            {
+                agent.SetDestination(patrolPoints[patrolIndex].position);
+            }
+        }
     }
 
     void Update()
@@ -87,6 +98,14 @@ public class EnemyBasics : MonoBehaviour
             case State.Idle:
                 Idle();
                 break;
+        }
+
+        if (agent.velocity.sqrMagnitude > 0.1f)
+        {
+            Vector3 lookDirection = agent.velocity.normalized;
+            lookDirection.y = 0; // Keep only horizontal rotation
+            if (lookDirection != Vector3.zero)
+                transform.forward = lookDirection;
         }
     }
     

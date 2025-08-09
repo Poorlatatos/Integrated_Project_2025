@@ -90,15 +90,20 @@ public class ChecklistManager : MonoBehaviour
     // Call this when an item is picked up
     public void CrossOffItem(string itemName)
     {
+        Debug.Log("Trying to cross off: " + itemName);
         if (itemToText.TryGetValue(itemName, out TextMeshProUGUI text))
         {
-            text.text = $"<s>{itemName}</s>"; // Strikethrough using TMP rich text
+            text.text = $"<s>{itemName}</s>";
             text.color = Color.gray;
         }
+        else
+        {
+            Debug.LogWarning("Item not found in checklist: " + itemName);
+        }
 
-        // Check if all items are collected and open the door
         if (AreAllItemsCollected() && doorToOpen != null)
         {
+            Debug.Log("All items collected! Opening door.");
             doorToOpen.OpenDoor();
         }
     }

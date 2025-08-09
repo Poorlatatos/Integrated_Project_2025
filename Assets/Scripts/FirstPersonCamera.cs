@@ -96,6 +96,7 @@ public class FirstPersonCamera : MonoBehaviour
                     // If it's a KeyItem, cross off and destroy immediately
                     if (targetItem.layer == keyItemLayer)
                     {
+                        FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
                         FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(targetItem.name);
                         FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia(); // <-- Add this line
                         Destroy(targetItem);

@@ -26,6 +26,7 @@ public class SceneFader : MonoBehaviour
 
     private IEnumerator FadeRoutine(string sceneName)
     {
+        Debug.Log("Fading out to switch scene: " + sceneName);
         // Fade out
         yield return StartCoroutine(Fade(0f, 1f));
         // Load scene

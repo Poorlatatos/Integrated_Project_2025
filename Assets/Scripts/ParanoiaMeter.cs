@@ -31,7 +31,6 @@ public class ParanoiaMeter : MonoBehaviour
         if (enemy != null && enemy.currentState == EnemyBasics.State.Inactive)
         {
             enemy.currentState = EnemyBasics.State.Patrolling;
-            // Optionally, set the enemy to start patrolling from the nearest point
             enemy.patrolIndex = enemy.GetNearestPatrolPointIndex();
             enemy.agent.SetDestination(enemy.patrolPoints[enemy.patrolIndex].position);
         }
