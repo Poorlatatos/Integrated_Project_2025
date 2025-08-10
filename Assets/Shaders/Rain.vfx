@@ -4710,7 +4710,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.OrientedBox, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"center":{"x":-11.526033401489258,"y":21.15846061706543,"z":78.96076965332031},"angles":{"x":0.0,"y":0.0,"z":0.0},"size":{"x":137.4851837158203,"y":1.0,"z":168.19085693359376}}'
+      m_SerializableObject: '{"center":{"x":-3.721752166748047,"y":21.15846061706543,"z":84.67402648925781},"angles":{"x":0.0,"y":0.0,"z":0.0},"size":{"x":144.85958862304688,"y":1.0,"z":181.97799682617188}}'
     m_Space: 1
   m_Property:
     name: Box
@@ -5747,9 +5747,9 @@ MonoBehaviour:
   - {fileID: 8926484042661618040}
   - {fileID: 8926484042661618042}
   dataType: 1
-  capacity: 200000
-  stripCapacity: 400
-  particlePerStripCount: 500
+  capacity: 420000
+  stripCapacity: 600
+  particlePerStripCount: 700
   needsComputeBounds: 0
   boundsMode: 0
   m_Space: 1
@@ -6392,7 +6392,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.0,"value":0.5,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":0.0,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":0.995819091796875,"value":0.10613250732421875,"inTangent":0.0,"outTangent":0.0,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
     m_Space: -1
   m_Property:
     name: Size
