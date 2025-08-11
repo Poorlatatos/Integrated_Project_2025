@@ -1156,6 +1156,7 @@ GameObject:
   - component: {fileID: 8227842052119041860}
   - component: {fileID: 7176233841027308859}
   - component: {fileID: 4387500146979901772}
+  - component: {fileID: 5744531009294022876}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1336,6 +1337,14 @@ MonoBehaviour:
   sprintRechargeRate: 1
   sprintTimer: 0
   isSprinting: 0
+--- !u!81 &5744531009294022876
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733561616213557116}
+  m_Enabled: 1
 --- !u!1 &1750634903811403831
 GameObject:
   m_ObjectHideFlags: 0
@@ -5477,3 +5486,5 @@ MonoBehaviour:
   flashAlpha: 0.3
   flashFadeTime: 0.15
   flashInterval: 2.2
+  audioSource: {fileID: 0}
+  heartBeatClip: {fileID: 0}

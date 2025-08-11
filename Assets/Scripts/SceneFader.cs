@@ -59,4 +59,10 @@ public class SceneFader : MonoBehaviour
             fadeImage.color = c;
         }
     }
+
+    public IEnumerator FadeAndSwitchSceneCoroutine(string sceneName)
+    {
+        yield return StartCoroutine(Fade(0f, 1f)); // Fade out
+        UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
+    }
 }

@@ -3,13 +3,18 @@ using TMPro;
 using System.Collections;
 public class EscapeTrigger : MonoBehaviour
 {
+    public GameObject enemyTextbox;
     public GameObject[] hudObjects; // Assign all HUD GameObjects (e.g. ChecklistPanel, Heart, SprintUI, etc.)
     public PlayerControl playerControl; // Assign your PlayerControl script
     public ChecklistManager checklistManager; // Assign your ChecklistManager in Inspector
+    private bool hasTriggered = false; // Add this line
+    public AudioSource triggerAudioSource;
+    public AudioClip triggerClip;
 
     [Header("Escape Movement Settings")]
     public float newWalkSpeed = 8f;
     public float newSprintSpeed = 14f;
+    public float newJumpForce = 10f;
 
     [Header("Escape Camera Settings")]
     public Camera playerCamera; // Assign the player's camera here
@@ -20,6 +25,16 @@ public class EscapeTrigger : MonoBehaviour
     private float fovLerpTime = 0f;
     private float startFOV = 0f;
     public TextMeshProUGUI escapeText;
+
+    [Header("Camera Swing Settings")]
+    public Transform enemyTransform; // Assign in Inspector
+    public float cameraOffsetDistance = 1.5f; // Distance in front of enemy's face
+    public float holdDuration = 1f;
+    private bool isTeleporting = false;
+
+    [Header("Escape Enemy Spawn")]
+    public GameObject escapeEnemyPrefab; // Assign your new enemy prefab in Inspector
+    public Transform escapeEnemySpawnPoint;
 
     void Start()
     {
@@ -33,13 +48,27 @@ public class EscapeTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        if (hasTriggered) return; // Prevent re-triggering
+
+        if (triggerAudioSource != null && triggerClip != null)
+        {
+            triggerAudioSource.PlayOneShot(triggerClip);
+        }
+        
         if (other.CompareTag("Player"))
         {
             if (checklistManager != null && checklistManager.AreAllItemsCollected())
             {
+                hasTriggered = true; // Mark as triggered
+
+                // Optionally disable the collider to prevent further triggers
+                var col = GetComponent<Collider>();
+                if (col != null)
+                    col.enabled = false;
+
                 if (escapeText != null)
                 {
-                    StartCoroutine(FlashEscapeText(3f, 4f)); // 3 seconds, flashes 4 times per second
+                    StartCoroutine(FlashEscapeText(3f, 4f));
                 }
 
                 foreach (var obj in hudObjects)
@@ -49,8 +78,9 @@ public class EscapeTrigger : MonoBehaviour
                 {
                     playerControl.sprintDuration = 99999f;
                     playerControl.sprintTimer = 99999f;
-                    playerControl.moveSpeed = newWalkSpeed;
-                    playerControl.sprintSpeed = newSprintSpeed;
+                    playerControl.moveSpeed = newWalkSpeed; // Sets the new walk speed
+                    playerControl.sprintSpeed = newSprintSpeed; // Sets the new sprint speed
+                    playerControl.jumpForce = newJumpForce; // Sets the new jump force
                 }
 
                 // Start FOV change
@@ -61,7 +91,12 @@ public class EscapeTrigger : MonoBehaviour
                     fovChanging = true;
                 }
 
-                Destroy(gameObject);
+                if (playerCamera != null && enemyTransform != null && !isTeleporting)
+                {
+                    StartCoroutine(TeleportCameraInFrontOfEnemy());
+                }
+
+                // Do NOT destroy(gameObject) here!
             }
         }
     }
@@ -97,5 +132,69 @@ public class EscapeTrigger : MonoBehaviour
         var c = escapeText.color;
         c.a = 0f;
         escapeText.color = c;
+    }
+
+    private IEnumerator TeleportCameraInFrontOfEnemy()
+    {
+        isTeleporting = true;
+        Transform camTransform = playerCamera.transform;
+
+        // Save original local position and rotation
+        Vector3 originalLocalPos = camTransform.localPosition;
+        Quaternion originalLocalRot = camTransform.localRotation;
+        Transform originalParent = camTransform.parent;
+
+        // Detach camera from player (so we can move it freely)
+        camTransform.SetParent(null);
+
+        // Calculate position in front of enemy's face
+        Vector3 enemyForward = enemyTransform.forward;
+        Vector3 targetPos = enemyTransform.position + enemyForward * cameraOffsetDistance;
+        Quaternion targetRot = Quaternion.LookRotation(-enemyForward, Vector3.up);
+
+        // Teleport camera
+        camTransform.position = targetPos;
+        camTransform.rotation = targetRot;
+
+        // Show textbox
+        if (enemyTextbox != null)
+            enemyTextbox.SetActive(true);
+
+        // Hold for a moment
+        yield return new WaitForSeconds(holdDuration);
+
+        // Hide textbox
+        if (enemyTextbox != null)
+            enemyTextbox.SetActive(false);
+
+        // Reattach camera to player and restore local position/rotation
+        camTransform.SetParent(originalParent);
+        camTransform.localPosition = originalLocalPos;
+        camTransform.localRotation = originalLocalRot;
+
+        isTeleporting = false;
+
+        // --- SPAWN ESCAPE ENEMY ---
+        if (escapeEnemyPrefab != null && escapeEnemySpawnPoint != null && playerControl != null)
+        {
+            Debug.Log("Spawning escape enemy...");
+            GameObject newEnemy = Instantiate(escapeEnemyPrefab, escapeEnemySpawnPoint.position, escapeEnemySpawnPoint.rotation);
+
+            // If it's a PoliceChaser, set player and play siren
+            var policeChaser = newEnemy.GetComponent<PoliceChaser>();
+            if (policeChaser != null)
+            {
+                policeChaser.player = playerControl.transform;
+                policeChaser.PlaySiren();
+            }
+
+            // If using EnemyBasics for other logic, keep this as well
+            var enemyAI = newEnemy.GetComponent<EnemyBasics>();
+            if (enemyAI != null)
+            {
+                enemyAI.player = playerControl.transform;
+                enemyAI.currentState = EnemyBasics.State.Chasing;
+            }
+        }
     }
 }

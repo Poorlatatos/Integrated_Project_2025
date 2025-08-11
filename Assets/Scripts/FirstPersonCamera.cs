@@ -98,7 +98,7 @@ public class FirstPersonCamera : MonoBehaviour
                     {
                         FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
                         FindFirstObjectByType<ChecklistManager>()?.RegisterAndCrossOff(targetItem.name);
-                        FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia(); // <-- Add this line
+                        FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
                         Destroy(targetItem);
                         heldItem = null;
                     }
@@ -110,7 +110,19 @@ public class FirstPersonCamera : MonoBehaviour
                         heldItem.GetComponent<Collider>().enabled = false;
                         heldItem.transform.SetParent(handTransform);
                         heldItem.transform.localPosition = Vector3.zero;
-                        heldItem.transform.localRotation = Quaternion.identity;
+
+                        // Check for custom pickup rotation
+                        PickupSettings settings = heldItem.GetComponent<PickupSettings>();
+                        if (settings != null)
+                            heldItem.transform.localRotation = Quaternion.Euler(settings.pickupLocalEulerAngles);
+                        else
+                            heldItem.transform.localRotation = Quaternion.identity;
+
+                        // FLASHLIGHT INTEGRATION: Call OnPickup if this is a flashlight
+                        var flashlight = heldItem.GetComponent<FlashlightController>();
+                        if (flashlight != null)
+                            flashlight.OnPickup();
+
                         FindFirstObjectByType<ParanoiaMeter>()?.IncreaseParanoia();
                         Debug.Log("Item picked up!");
                     }
@@ -124,10 +136,15 @@ public class FirstPersonCamera : MonoBehaviour
     }
 
     // Optional: Drop item with another key (e.g. Q)
-        void LateUpdate()
+    void LateUpdate()
     {
         if (heldItem != null && Keyboard.current.qKey.wasPressedThisFrame)
         {
+            // FLASHLIGHT INTEGRATION: Call OnDrop if this is a flashlight
+            var flashlight = heldItem.GetComponent<FlashlightController>();
+            if (flashlight != null)
+                flashlight.OnDrop();
+
             heldItem.transform.SetParent(null);
             var rb = heldItem.GetComponent<Rigidbody>();
             rb.isKinematic = false;
