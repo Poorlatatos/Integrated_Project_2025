@@ -202,7 +202,7 @@ Transform:
   m_GameObject: {fileID: 162641890}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.36, y: 1.723, z: -7.58}
+  m_LocalPosition: {x: 0.36, y: 1.723, z: -2.5609999}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -247,6 +247,13 @@ MonoBehaviour:
   - {fileID: 2131642559}
   playerControl: {fileID: 146315135}
   checklistManager: {fileID: 1143743546}
+  triggerAudioSource: {fileID: 0}
+  triggerClip: {fileID: 0}
+  escapeTextClip: {fileID: 0}
+  escapeTextAudioSource: {fileID: 0}
+  loopAudioSource: {fileID: 0}
+  loopClip: {fileID: 0}
+  loopDelay: 3
   newWalkSpeed: 8
   newSprintSpeed: 14
   newJumpForce: 10
@@ -548,7 +555,7 @@ Transform:
   m_GameObject: {fileID: 511252896}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.776, y: 1.723, z: -1.999}
+  m_LocalPosition: {x: 3.54, y: 1.723, z: 0.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1152,6 +1159,8 @@ MonoBehaviour:
   playerControlScript: {fileID: 146315134}
   cameraLookScript: {fileID: 683370309}
   enemyTransform: {fileID: 1071213544}
+  jumpscareAudioSource: {fileID: 0}
+  jumpscareClip: {fileID: 0}
 --- !u!1 &1458170257
 GameObject:
   m_ObjectHideFlags: 0
@@ -1208,7 +1217,7 @@ Transform:
   m_GameObject: {fileID: 1595246242}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.776, y: 1.723, z: -13.55}
+  m_LocalPosition: {x: -1.776, y: 1.723, z: -8.531}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1583,6 +1592,10 @@ PrefabInstance:
     - target: {fileID: 5182490619395125830, guid: aec414f1ade115542aa7afcc85142fe1, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5252177499430540627, guid: aec414f1ade115542aa7afcc85142fe1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5785306781294863194, guid: aec414f1ade115542aa7afcc85142fe1, type: 3}
       propertyPath: m_LocalPosition.x

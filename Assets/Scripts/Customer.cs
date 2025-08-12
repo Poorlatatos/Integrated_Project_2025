@@ -115,7 +115,7 @@ public class Customer : MonoBehaviour
         FirstPersonCamera cam = player.GetComponent<FirstPersonCamera>();
         if (cam != null && cam.heldItem != null && !hasReported)
         {
-            Debug.Log("Customer sees player holding an item!");
+            //Debug.Log("Customer sees player holding an item!");
             Vector3 toPlayer = player.position - transform.position;
             float distance = toPlayer.magnitude;
             if (distance <= detectionRadius)
@@ -123,27 +123,28 @@ public class Customer : MonoBehaviour
                 float angle = Vector3.Angle(transform.forward, toPlayer.normalized);
                 if (angle <= detectionAngle * 0.5f)
                 {
-                    Debug.Log("Player is within detection cone!");
+                    //Debug.Log("Player is within detection cone!");
                     if (!Physics.Raycast(transform.position + Vector3.up * 1.5f, toPlayer.normalized, distance, obstructionMask))
                     {
-                        Debug.Log("Customer has line of sight to player! Reporting...");
+                        //Debug.Log("Customer has line of sight to player! Reporting...");
                         hasReported = true;
                         currentState = State.Reporting;
                         agent.SetDestination(shopkeeper.transform.position);
                     }
                     else
                     {
-                        Debug.Log("Line of sight blocked.");
+                        //Debug.Log("Line of sight blocked.");
                     }
                 }
                 else
                 {
-                    Debug.Log("Player not in detection angle.");
+                    //Debug.Log("Player not in detection angle.");
                 }
             }
             else
             {
-                Debug.Log("Player not in detection radius.");
+                //Debug.Log("Player not in detection radius.");
+                //All of these were for debugging purposes
             }
         }
     }
