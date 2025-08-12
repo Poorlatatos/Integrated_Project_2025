@@ -346,6 +346,12 @@ MonoBehaviour:
   flashInterval: 0.3
   sirenSource: {fileID: 3071444065245476329}
   sirenClip: {fileID: 8300000, guid: cd72902a419056144bc52ade15ca5130, type: 3}
+  caughtClip: {fileID: 8300000, guid: 7281d6363183c344a9b57ffd2bc520f6, type: 3}
+  caughtAudioSource: {fileID: 3071444065245476329}
+  playerControlScript: {fileID: 0}
+  cameraLookScript: {fileID: 0}
+  playerCamera: {fileID: 0}
+  caughtDuration: 2
 --- !u!195 &2323884549011591300
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -410,7 +416,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

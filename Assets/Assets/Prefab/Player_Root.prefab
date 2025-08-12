@@ -972,7 +972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerBody: {fileID: 8516945252066729722}
-  mouseSensitivity: 70
+  mouseSensitivity: 40
   itemDetectDistance: 3
   itemLayer:
     serializedVersion: 2

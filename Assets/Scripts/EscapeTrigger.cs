@@ -10,6 +10,13 @@ public class EscapeTrigger : MonoBehaviour
     private bool hasTriggered = false; // Add this line
     public AudioSource triggerAudioSource;
     public AudioClip triggerClip;
+    public AudioClip escapeTextClip;
+    public AudioSource escapeTextAudioSource;
+
+    [Header("Additional Audio")]
+    public AudioSource loopAudioSource; // Assign a dedicated AudioSource for looping
+    public AudioClip loopClip; // Assign the looping audio clip
+    public float loopDelay = 3f; // Seconds to wait before starting the loop
 
     [Header("Escape Movement Settings")]
     public float newWalkSpeed = 8f;
@@ -96,6 +103,12 @@ public class EscapeTrigger : MonoBehaviour
                     StartCoroutine(TeleportCameraInFrontOfEnemy());
                 }
 
+                // Start coroutine to play the looping audio after a delay
+                if (loopAudioSource != null && loopClip != null)
+                {
+                    StartCoroutine(PlayLoopingAudioAfterDelay(loopDelay));
+                }
+
                 // Do NOT destroy(gameObject) here!
             }
         }
@@ -116,6 +129,9 @@ public class EscapeTrigger : MonoBehaviour
 
     private IEnumerator FlashEscapeText(float duration, float flashSpeed)
     {
+        if (escapeTextAudioSource != null && escapeTextClip != null)
+            escapeTextAudioSource.PlayOneShot(escapeTextClip);
+
         if (escapeText == null) yield break;
         float timer = 0f;
         while (timer < duration)
@@ -132,6 +148,17 @@ public class EscapeTrigger : MonoBehaviour
         var c = escapeText.color;
         c.a = 0f;
         escapeText.color = c;
+    }
+
+    private IEnumerator PlayLoopingAudioAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (loopAudioSource != null && loopClip != null)
+        {
+            loopAudioSource.clip = loopClip;
+            loopAudioSource.loop = true;
+            loopAudioSource.Play();
+        }
     }
 
     private IEnumerator TeleportCameraInFrontOfEnemy()

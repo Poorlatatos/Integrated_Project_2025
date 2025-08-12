@@ -14,6 +14,10 @@ public class JumpscareManager : MonoBehaviour
     private bool isShaking = false;
     private float shakeTimer = 0f;
 
+    [Header("Jumpscare Audio")]
+    public AudioSource jumpscareAudioSource; // Assign in Inspector
+    public AudioClip jumpscareClip; // Assign in Inspector
+
     void Start()
     {
         if (playerCamera == null)
@@ -28,6 +32,10 @@ public class JumpscareManager : MonoBehaviour
         if (jumpscareUI != null)
             jumpscareUI.SetActive(true);
         originalCamPos = playerCamera.transform.localPosition;
+
+        // Play jumpscare audio
+        if (jumpscareAudioSource != null && jumpscareClip != null)
+            jumpscareAudioSource.PlayOneShot(jumpscareClip);
 
         // Instantly lock camera to enemy's head
         if (enemyTransform != null)

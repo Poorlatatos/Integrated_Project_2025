@@ -31,6 +31,15 @@ public class EnemyBasics : MonoBehaviour
     public float specialIdleTime = 5f; // How long to idle at the special point
     public Animator animator;
 
+    [Header("Enemy Sounds")]
+    public AudioClip[] randomSounds;
+    public AudioSource audioSource;
+    public float minSoundInterval = 5f;
+    public float maxSoundInterval = 15f;
+
+private float soundTimer = 0f;
+private float nextSoundTime = 0f;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -47,6 +56,13 @@ public class EnemyBasics : MonoBehaviour
                 agent.SetDestination(patrolPoints[patrolIndex].position);
             }
         }
+        SetNextSoundTime();
+    }
+
+    private void SetNextSoundTime()
+    {
+        nextSoundTime = Random.Range(minSoundInterval, maxSoundInterval);
+        soundTimer = 0f;
     }
 
     void Update()
@@ -106,6 +122,17 @@ public class EnemyBasics : MonoBehaviour
             lookDirection.y = 0; // Keep only horizontal rotation
             if (lookDirection != Vector3.zero)
                 transform.forward = lookDirection;
+        }
+        // Play random sound at random intervals
+        if (randomSounds != null && randomSounds.Length > 0 && audioSource != null)
+        {
+            soundTimer += Time.deltaTime;
+            if (soundTimer >= nextSoundTime)
+            {
+                AudioClip clip = randomSounds[Random.Range(0, randomSounds.Length)];
+                audioSource.PlayOneShot(clip);
+                SetNextSoundTime();
+            }
         }
     }
     
