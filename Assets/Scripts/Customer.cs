@@ -3,28 +3,36 @@ using UnityEngine.AI;
 
 public class Customer : MonoBehaviour
 {
-    public Transform[] wanderPoints; // Assign points around the shop
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Customer AI script for Unity
+      Controls the behavior of customers in the shop, including wandering, glancing, and reporting to the shopkeeper.
+      The customer AI also has the same cone of vision programmed like the shopkeeper except it will never chase the player down.
+    */
+
+    public Transform[] wanderPoints; /// Assign points around the shop
     public float wanderSpeed = 1.5f;
-    public float runSpeed = 4f; // Speed when reporting to shopkeeper
-    public float glanceInterval = 2f;
-    public float glanceAngle = 60f;
-    public float glanceDuration = 1f;
-    public float detectionRadius = 7f;
-    public float detectionAngle = 90f;
+    public float runSpeed = 4f; /// Speed when reporting to shopkeeper
+    public float glanceInterval = 2f; /// Time between glances
+    public float glanceAngle = 60f; /// Angle of the glance
+    public float glanceDuration = 1f; /// Duration of the glance
+    public float detectionRadius = 7f; /// Radius for detecting the player
+    public float detectionAngle = 90f; /// Angle for detecting the player
     public LayerMask playerLayer;
     public LayerMask obstructionMask;
 
-    public EnemyBasics shopkeeper; // Assign the shopkeeper (EnemyBasics) in Inspector
-    public Transform player;       // Assign the player in Inspector
+    public EnemyBasics shopkeeper; /// Assign the shopkeeper (EnemyBasics) in Inspector
+    public Transform player;       /// Assign the player in Inspector
 
-    private NavMeshAgent agent;
-    private int currentWanderIndex = 0;
-    private float glanceTimer = 0f;
-    private bool isGlancing = false;
-    private float glanceDirection = 1f;
-    private bool hasReported = false;
-    public Animator animator;
-    private Vector3 lastPosition;
+    private NavMeshAgent agent; /// Reference to the NavMeshAgent component
+    private int currentWanderIndex = 0; /// Current index of the wander point
+    private float glanceTimer = 0f; /// Timer for the glance duration
+    private bool isGlancing = false; /// Whether the customer is currently glancing
+    private float glanceDirection = 1f; /// Direction of the glance (left or right)
+    private bool hasReported = false; /// Whether the customer has reported to the shopkeeper
+    public Animator animator; /// Reference to the Animator component
+    private Vector3 lastPosition; /// Last position of the customer
     private enum State { Wandering, Glancing, Reporting }
     private State currentState = State.Wandering;
 
@@ -37,7 +45,7 @@ public class Customer : MonoBehaviour
             agent.SetDestination(wanderPoints[0].position);
     }
 
-    void Update()
+    void Update() /// Handle customer behavior updates
     {
         bool isWalking = agent.velocity.magnitude > 0.1f && (currentState == State.Wandering || currentState == State.Glancing);
         animator.SetBool("isWalking", isWalking);
@@ -68,7 +76,7 @@ public class Customer : MonoBehaviour
         }
     }
 
-    void Wander()
+    void Wander() /// Handle wandering behavior
     {
         agent.isStopped = false;
         if (wanderPoints.Length == 0) return;
@@ -82,7 +90,7 @@ public class Customer : MonoBehaviour
         }
     }
 
-    void Glance()
+    void Glance() /// Handle glancing behavior
     {
         agent.isStopped = true;
         glanceTimer += Time.deltaTime;
@@ -98,7 +106,7 @@ public class Customer : MonoBehaviour
         }
     }
 
-    void GlanceCheck()
+    void GlanceCheck() /// Check for player in detection cone
     {
         // Visualize the customer's forward direction
         Debug.DrawRay(transform.position + Vector3.up * 1.5f, transform.forward * detectionRadius, Color.cyan);
@@ -149,7 +157,7 @@ public class Customer : MonoBehaviour
         }
     }
 
-    void ReportToShopkeeper()
+    void ReportToShopkeeper() /// Report the player's suspicious behavior to the shopkeeper
     {
         agent.isStopped = false;
         agent.SetDestination(shopkeeper.transform.position);
@@ -169,7 +177,7 @@ public class Customer : MonoBehaviour
             agent.SetDestination(wanderPoints[currentWanderIndex].position);
         }
     }
-    public void TryReportPlayerStealing()
+    public void TryReportPlayerStealing() /// Try to report the player stealing
     {
         if (hasReported) return;
 

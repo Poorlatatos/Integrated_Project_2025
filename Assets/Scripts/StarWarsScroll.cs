@@ -5,16 +5,22 @@ using TMPro;
 
 public class StarWarsScroll : MonoBehaviour
 {
-    public RectTransform scrollText; // Assign the RectTransform of your scrolling text
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 29/07/2025
+    * Description: Star Wars scrolling text effect for Unity
+    */
+
+    public RectTransform scrollText; /// Assign the RectTransform of your scrolling text
     public float scrollSpeed = 40f;
-    public float endY = 1000f; // Y position at which the scroll ends
-    public float skipHoldTime = 2f; // How long to hold space to skip
-    public CanvasGroup fadeGroup; // Optional: assign for fade-out effect
+    public float endY = 1000f; /// Y position at which the scroll ends
+    public float skipHoldTime = 2f; /// How long to hold space to skip
+    public CanvasGroup fadeGroup; /// Optional: assign for fade-out effect
     public float fadeDuration = 1f;
-    public string nextSceneName; // Leave blank to just disable scroll on skip
+    public string nextSceneName; /// Leave blank to just disable scroll on skip
 
     [Header("Skip UI")]
-    public TextMeshProUGUI skipText; // Assign in Inspector (e.g. "Hold SPACE to skip...")
+    public TextMeshProUGUI skipText; /// Assign in Inspector (e.g. "Hold SPACE to skip...")
     public string skipMessage = "Holding SPACE to skip...";
 
     private Vector2 startPos;
@@ -71,7 +77,7 @@ public class StarWarsScroll : MonoBehaviour
         }
     }
 
-    private void EndScroll()
+    private void EndScroll() /// End the scrolling effect
     {
         finished = true;
         if (!string.IsNullOrEmpty(nextSceneName))
@@ -80,7 +86,7 @@ public class StarWarsScroll : MonoBehaviour
             gameObject.SetActive(false);
     }
 
-    private System.Collections.IEnumerator FadeAndEnd()
+    private System.Collections.IEnumerator FadeAndEnd() /// Coroutine for fading out and ending the scroll
     {
         if (fadeGroup != null)
         {

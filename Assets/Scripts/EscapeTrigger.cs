@@ -3,44 +3,49 @@ using TMPro;
 using System.Collections;
 public class EscapeTrigger : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Trigger for the escape sequence in the game
+    */
     public GameObject enemyTextbox;
-    public GameObject[] hudObjects; // Assign all HUD GameObjects (e.g. ChecklistPanel, Heart, SprintUI, etc.)
-    public PlayerControl playerControl; // Assign your PlayerControl script
-    public ChecklistManager checklistManager; // Assign your ChecklistManager in Inspector
-    private bool hasTriggered = false; // Add this line
-    public AudioSource triggerAudioSource;
-    public AudioClip triggerClip;
-    public AudioClip escapeTextClip;
-    public AudioSource escapeTextAudioSource;
+    public GameObject[] hudObjects; /// Assign all HUD GameObjects (e.g. ChecklistPanel, Heart, SprintUI, etc.)
+    public PlayerControl playerControl; /// Assign your PlayerControl script
+    public ChecklistManager checklistManager; /// Assign your ChecklistManager in Inspector
+    private bool hasTriggered = false; /// Add this line
+    public AudioSource triggerAudioSource; /// Assign your trigger AudioSource
+    public AudioClip triggerClip; /// Assign your trigger AudioClip
+    public AudioClip escapeTextClip; /// Assign your escape text AudioClip
+    public AudioSource escapeTextAudioSource; /// Assign your escape text AudioSource
 
     [Header("Additional Audio")]
-    public AudioSource loopAudioSource; // Assign a dedicated AudioSource for looping
-    public AudioClip loopClip; // Assign the looping audio clip
-    public float loopDelay = 3f; // Seconds to wait before starting the loop
+    public AudioSource loopAudioSource; /// Assign a dedicated AudioSource for looping
+    public AudioClip loopClip; /// Assign the looping audio clip
+    public float loopDelay = 3f; /// Seconds to wait before starting the loop
 
     [Header("Escape Movement Settings")]
-    public float newWalkSpeed = 8f;
-    public float newSprintSpeed = 14f;
-    public float newJumpForce = 10f;
+    public float newWalkSpeed = 8f; /// New walk speed during escape
+    public float newSprintSpeed = 14f; /// New sprint speed during escape
+    public float newJumpForce = 10f; /// New jump force during escape
 
     [Header("Escape Camera Settings")]
-    public Camera playerCamera; // Assign the player's camera here
-    public float newFOV = 90f; // Desired FOV after escape
-    public float fovLerpDuration = 1f; // Duration of FOV transition
+    public Camera playerCamera; /// Assign the player's camera here
+    public float newFOV = 90f; /// Desired FOV after escape
+    public float fovLerpDuration = 1f; /// Duration of FOV transition
 
     private bool fovChanging = false;
-    private float fovLerpTime = 0f;
-    private float startFOV = 0f;
+    private float fovLerpTime = 0f; /// Time elapsed during FOV transition
+    private float startFOV = 0f; /// Starting FOV before transition
     public TextMeshProUGUI escapeText;
 
     [Header("Camera Swing Settings")]
-    public Transform enemyTransform; // Assign in Inspector
-    public float cameraOffsetDistance = 1.5f; // Distance in front of enemy's face
-    public float holdDuration = 1f;
-    private bool isTeleporting = false;
+    public Transform enemyTransform; /// Assign in Inspector
+    public float cameraOffsetDistance = 1.5f; /// Distance in front of enemy's face
+    public float holdDuration = 1f; /// Duration to hold the camera position
+    private bool isTeleporting = false; 
 
     [Header("Escape Enemy Spawn")]
-    public GameObject escapeEnemyPrefab; // Assign your new enemy prefab in Inspector
+    public GameObject escapeEnemyPrefab; /// Assign your new enemy prefab in Inspector
     public Transform escapeEnemySpawnPoint;
 
     void Start()
@@ -53,7 +58,7 @@ public class EscapeTrigger : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other) /// Handle trigger events
     {
         if (hasTriggered) return; // Prevent re-triggering
 
@@ -127,7 +132,7 @@ public class EscapeTrigger : MonoBehaviour
         }
     }
 
-    private IEnumerator FlashEscapeText(float duration, float flashSpeed)
+    private IEnumerator FlashEscapeText(float duration, float flashSpeed) /// Flash the escape text
     {
         if (escapeTextAudioSource != null && escapeTextClip != null)
             escapeTextAudioSource.PlayOneShot(escapeTextClip);
@@ -150,7 +155,7 @@ public class EscapeTrigger : MonoBehaviour
         escapeText.color = c;
     }
 
-    private IEnumerator PlayLoopingAudioAfterDelay(float delay)
+    private IEnumerator PlayLoopingAudioAfterDelay(float delay) /// Play looping audio after a delay
     {
         yield return new WaitForSeconds(delay);
         if (loopAudioSource != null && loopClip != null)
@@ -161,7 +166,7 @@ public class EscapeTrigger : MonoBehaviour
         }
     }
 
-    private IEnumerator TeleportCameraInFrontOfEnemy()
+    private IEnumerator TeleportCameraInFrontOfEnemy() /// Teleport the camera in front of the enemy
     {
         isTeleporting = true;
         Transform camTransform = playerCamera.transform;

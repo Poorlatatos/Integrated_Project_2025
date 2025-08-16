@@ -5,30 +5,36 @@ using System.Collections;
 
 public class PoliceChaser : MonoBehaviour
 {
-    
-    public Transform player;
-    public float chaseSpeed = 6f;
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 12/08/2025
+    * Description: Police AI script for Unity
+      Controls the behavior of police officers in the game, including chasing the player and triggering alarms.
+    */
+
+    public Transform player; 
+    public float chaseSpeed = 6f; /// Speed of the police chase
     private NavMeshAgent agent;
 
     [Header("Police Lights")]
-    public Light redLight;
-    public Light blueLight;
-    public float flashInterval = 0.3f;
+    public Light redLight; /// Assign in Inspector
+    public Light blueLight; /// Assign in Inspector
+    public float flashInterval = 0.3f; /// Assign in Inspector
 
     private float flashTimer = 0f;
     private bool redOn = true;
 
     [Header("Siren")]
-    public AudioSource sirenSource; // Assign in Inspector
-    public AudioClip sirenClip;     // Assign in Inspector
+    public AudioSource sirenSource; /// Assign in Inspector
+    public AudioClip sirenClip;     /// Assign in Inspector
 
     [Header("Caught Sequence")]
-    public AudioClip caughtClip; // Assign a "caught" or jumpscare sound
-    public AudioSource caughtAudioSource; // Assign a separate AudioSource for caught sound
-    public MonoBehaviour playerControlScript; // Assign your PlayerControl script
-    public MonoBehaviour cameraLookScript;    // Assign your camera look script (e.g., FirstPersonCamera)
-    public Camera playerCamera;               // Assign the player's camera
-    public float caughtDuration = 2f;         // How long to freeze before resetting
+    public AudioClip caughtClip; /// Assign a "caught" or jumpscare sound
+    public AudioSource caughtAudioSource; /// Assign a separate AudioSource for caught sound
+    public MonoBehaviour playerControlScript; /// Assign your PlayerControl script
+    public MonoBehaviour cameraLookScript;    /// Assign your camera look script (e.g., FirstPersonCamera)
+    public Camera playerCamera;               /// Assign the player's camera
+    public float caughtDuration = 2f;         /// How long to freeze before resetting
 
     private bool isCatching = false;
 
@@ -76,7 +82,7 @@ public class PoliceChaser : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision) /// Handle collision events
     {
         if (isCatching) return;
         if (collision.gameObject.CompareTag("Player"))
@@ -85,7 +91,7 @@ public class PoliceChaser : MonoBehaviour
         }
     }
 
-    private IEnumerator CaughtSequence()
+    private IEnumerator CaughtSequence() /// Coroutine for handling the caught sequence
     {
         isCatching = true;
 

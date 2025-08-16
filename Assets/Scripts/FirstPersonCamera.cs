@@ -3,26 +3,31 @@ using UnityEngine.InputSystem;
 using TMPro;
 public class FirstPersonCamera : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: First-person camera controller for Unity
+    */
     public Transform playerBody;
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 100f; /// Mouse sensitivity for camera movement
 
-    float xRotation = 0f;
-    const float verticalLimit = 80f;
+    float xRotation = 0f; /// Current X rotation of the camera
+    const float verticalLimit = 80f; /// Maximum vertical rotation limit
 
     [Header("Item Detection")]
-    public float itemDetectDistance = 3f;
+    public float itemDetectDistance = 3f; /// Item detection distance
     public LayerMask itemLayer;
-    public TextMeshProUGUI pickupPromptText; // Assign in Inspector
+    public TextMeshProUGUI pickupPromptText; /// Assign in Inspector
 
     [Header("Item Hold")]
-    public Transform handTransform; // Assign a child transform (e.g. "Hand") to the camera in Inspector
+    public Transform handTransform; /// Assign a child transform (e.g. "Hand") to the camera in Inspector
     public GameObject heldItem;
 
     [Header("FOV Sprint Effect")]
-    public float normalFOV = 60f;
-    public float sprintFOV = 75f;
-    public float fovTransitionSpeed = 8f;
-    public PlayerControl playerControl; // Assign your PlayerControl in the Inspector
+    public float normalFOV = 60f; /// Normal FOV
+    public float sprintFOV = 75f; /// Sprinting FOV
+    public float fovTransitionSpeed = 8f; /// FOV transition speed
+    public PlayerControl playerControl; /// Assign your PlayerControl in the Inspector
 
     Camera cam;
 
@@ -75,7 +80,7 @@ public class FirstPersonCamera : MonoBehaviour
 
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, itemDetectDistance, itemLayer))
+        if (Physics.Raycast(ray, out hit, itemDetectDistance, itemLayer)) /// Check for item in front
         {
             GameObject targetItem = hit.collider.gameObject;
             int keyItemLayer = LayerMask.NameToLayer("KeyItem");
@@ -136,7 +141,7 @@ public class FirstPersonCamera : MonoBehaviour
     }
 
     // Optional: Drop item with another key (e.g. Q)
-    void LateUpdate()
+    void LateUpdate() /// Handle item dropping
     {
         if (heldItem != null && Keyboard.current.qKey.wasPressedThisFrame)
         {

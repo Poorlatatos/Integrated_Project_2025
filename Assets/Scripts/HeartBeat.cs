@@ -2,28 +2,34 @@ using UnityEngine;
 using System.Collections;
 public class HeartBeat : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Heartbeat script for Unity
+    */
+
     [Header("Heart Beat Settings")]
-    public float minBeatSpeed = 0.5f; // Slowest beat (seconds per beat)
-    public float maxBeatSpeed = 0.1f; // Fastest beat (seconds per beat)
-    public float minScale = 1f;
-    public float maxScale = 1.2f;
+    public float minBeatSpeed = 0.5f; /// Slowest beat (seconds per beat)
+    public float maxBeatSpeed = 0.1f; /// Fastest beat (seconds per beat)
+    public float minScale = 1f; /// Smallest scale
+    public float maxScale = 1.2f; /// Largest scale
 
     [Header("References")]
-    public ParanoiaMeter paranoiaMeter; // Assign in Inspector
-    public CanvasGroup paranoiaFlashGroup; // Assign your ParanoiaFlashImage's CanvasGroup here
-    public float paranoiaFlashThreshold = 0.6f; // 60% paranoia
-    public float flashAlpha = 0.3f; // How visible the flash is
-    public float flashFadeTime = 0.15f; // How quickly the flash fades out
+    public ParanoiaMeter paranoiaMeter; /// Assign in Inspector
+    public CanvasGroup paranoiaFlashGroup; /// Assign your ParanoiaFlashImage's CanvasGroup here
+    public float paranoiaFlashThreshold = 0.6f; /// 60% paranoia
+    public float flashAlpha = 0.3f; /// How visible the flash is
+    public float flashFadeTime = 0.15f; /// How quickly the flash fades out
     private float beatTimer = 0f;
     private bool isBeating = false;
 
     [Header("Flash Settings")]
-    public float flashInterval = 1.0f; // How often to flash (seconds)
+    public float flashInterval = 1.0f; /// How often to flash (seconds)
     private Coroutine flashCoroutine;
 
     [Header("Audio")]
-    public AudioSource audioSource; // Assign in Inspector
-    public AudioClip heartBeatClip; // Assign in Inspector
+    public AudioSource audioSource; /// Assign in Inspector
+    public AudioClip heartBeatClip; /// Assign in Inspector
 
     void Start()
     {
@@ -66,7 +72,7 @@ public class HeartBeat : MonoBehaviour
         }
     }
 
-    IEnumerator Beat(float targetScale)
+    IEnumerator Beat(float targetScale) /// Handle heartbeat scaling
     {
         isBeating = true;
         Vector3 originalScale = transform.localScale;
@@ -99,7 +105,7 @@ public class HeartBeat : MonoBehaviour
         isBeating = false;
     }
 
-    private IEnumerator FlashParanoiaImage()
+    private IEnumerator FlashParanoiaImage() /// Flash the paranoia image
     {
         paranoiaFlashGroup.alpha = flashAlpha;
         float t = 0f;

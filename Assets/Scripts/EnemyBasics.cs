@@ -3,33 +3,38 @@ using UnityEngine.AI;
 
 public class EnemyBasics : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Basic enemy AI script for Unity
+    */
     public enum State { Inactive, Patrolling, Chasing, Idle }
     public State currentState = State.Inactive;
 
-    public Transform[] patrolPoints;
-    public float idleTime = 2f;
-    public float chaseDistance = 10f;
-    public float stopChaseDistance = 15f;
-    public float idleRotationSpeed = 60f;
-    public Transform player;
+    public Transform[] patrolPoints; /// Array of patrol points for the enemy
+    public float idleTime = 2f; /// Time to wait at each patrol point
+    public float chaseDistance = 10f; /// Distance at which the enemy will start chasing the player
+    public float stopChaseDistance = 15f; /// Distance at which the enemy will stop chasing the player
+    public float idleRotationSpeed = 60f; /// Speed at which the enemy will rotate while idling
+    public Transform player; /// Reference to the player transform
 
-    [Header("Detection Settings")]
-    public float detectionRadius = 10f;
-    public float detectionAngle = 60f; // Field of view in degrees
-    public LayerMask detectionLayerMask;
-    public LayerMask obstructionMask;
+    [Header("Detection Settings")] /// Settings for enemy detection
+    public float detectionRadius = 10f; /// Radius within which the enemy can detect the player
+    public float detectionAngle = 60f; /// Field of view in degrees
+    public LayerMask detectionLayerMask; /// Layer mask for detection
+    public LayerMask obstructionMask; /// Layer mask for obstructions
 
     public NavMeshAgent agent;
     public int patrolIndex = 0;
     public float idleTimer = 0f;
 
-    public float chaseTimeout = 3f; // How long to keep chasing after losing sight
+    public float chaseTimeout = 3f; /// How long to keep chasing after losing sight
     public float chaseTimer = 0f;
 
     [Header("Special Patrol Point")]
-    public int specialPatrolIndex = 0; // Set this to the index of the special patrol point in the Inspector
-    public float specialIdleTime = 5f; // How long to idle at the special point
-    public Animator animator;
+    public int specialPatrolIndex = 0; /// Set this to the index of the special patrol point in the Inspector
+    public float specialIdleTime = 5f; /// How long to idle at the special point
+    public Animator animator; /// Reference to the enemy animator
 
     [Header("Enemy Sounds")]
     public AudioClip[] randomSounds;
@@ -59,7 +64,7 @@ private float nextSoundTime = 0f;
         SetNextSoundTime();
     }
 
-    private void SetNextSoundTime()
+    private void SetNextSoundTime() /// Set the next sound playback time
     {
         nextSoundTime = Random.Range(minSoundInterval, maxSoundInterval);
         soundTimer = 0f;
@@ -135,8 +140,8 @@ private float nextSoundTime = 0f;
             }
         }
     }
-    
-    public int GetNearestPatrolPointIndex()
+
+    public int GetNearestPatrolPointIndex() /// Get the index of the nearest patrol point
     {
         int nearestIndex = 0;
         float minDist = Mathf.Infinity;
@@ -152,7 +157,7 @@ private float nextSoundTime = 0f;
         return nearestIndex;
     }
 
-    public bool CanSeePlayer()
+    public bool CanSeePlayer() /// Check if the enemy can see the player
     {
         Vector3 enemyEyePos = transform.position + Vector3.up * 1.5f;
         Vector3 playerHeadPos = player.position + Vector3.up * 1.0f;
@@ -192,7 +197,7 @@ private float nextSoundTime = 0f;
         return false;
     }
 
-    void Patrol()
+    void Patrol() /// Handle patrolling behavior
     {
         if (patrolPoints.Length == 0) return;
 
@@ -206,13 +211,13 @@ private float nextSoundTime = 0f;
         }
     }
 
-    void Chase()
+    void Chase() /// Handle chasing behavior
     {
         agent.isStopped = false;
         agent.SetDestination(player.position);
     }
 
-    void Idle()
+    void Idle() /// Handle idle behavior
     {
         agent.isStopped = true;
         idleTimer += Time.deltaTime;
@@ -240,8 +245,7 @@ private float nextSoundTime = 0f;
         }
     }
 
-    // If using triggers instead of collisions:
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision) /// Handle collision events
     {
         Debug.Log("Enemy collided with: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
 

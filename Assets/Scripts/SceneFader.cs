@@ -5,8 +5,15 @@ using System.Collections;
 
 public class SceneFader : MonoBehaviour
 {
-    public Image fadeImage; // Assign a full-screen UI Image (black, alpha 1)
-    public float fadeDuration = 1f;
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 26/07/2025
+    * Description: Scene fader script for Unity
+      Controls the fading in and out between scenes.
+    */
+
+    public Image fadeImage; /// Assign a full-screen UI Image (black, alpha 1)
+    public float fadeDuration = 1f; /// Duration of the fade effect
 
     void Start()
     {
@@ -19,7 +26,7 @@ public class SceneFader : MonoBehaviour
         }
     }
 
-    public void FadeAndSwitchScene(string sceneName)
+    public void FadeAndSwitchScene(string sceneName) /// Fade and switch to a new scene
     {
         StartCoroutine(FadeRoutine(sceneName));
     }
@@ -37,7 +44,7 @@ public class SceneFader : MonoBehaviour
         yield return StartCoroutine(Fade(1f, 0f));
     }
 
-    private IEnumerator Fade(float from, float to)
+    private IEnumerator Fade(float from, float to) /// Coroutine for fading
     {
         float t = 0f;
         while (t < fadeDuration)
@@ -60,7 +67,7 @@ public class SceneFader : MonoBehaviour
         }
     }
 
-    public IEnumerator FadeAndSwitchSceneCoroutine(string sceneName)
+    public IEnumerator FadeAndSwitchSceneCoroutine(string sceneName) /// Coroutine for fading out and switching scenes
     {
         yield return StartCoroutine(Fade(0f, 1f)); // Fade out
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);

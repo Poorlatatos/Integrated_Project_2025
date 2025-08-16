@@ -2,15 +2,21 @@ using UnityEngine;
 
 public class ParanoiaMeter : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Paranoia meter script for Unity
+      Tracks the player's paranoia level and triggers enemy behavior based on it.
+    */
     [Header("Paranoia Settings")]
-    public float paranoia = 0f;
-    public float maxParanoia = 100f;
-    public float paranoiaIncreasePerItem = 10f;
-    public float paranoiaDecreaseRate = 2f; // Amount paranoia decreases per second
+    public float paranoia = 0f; /// Current paranoia level
+    public float maxParanoia = 100f; /// Maximum paranoia level
+    public float paranoiaIncreasePerItem = 10f; /// Paranoia increase per item picked up
+    public float paranoiaDecreaseRate = 2f; /// Amount paranoia decreases per second
 
     [Header("References")]
-    public EnemyBasics enemy; // Assign your EnemyBasics script in Inspector
-    public PlayerControl player; // Assign your PlayerControl script in Inspector
+    public EnemyBasics enemy; /// Assign your EnemyBasics script in Inspector
+    public PlayerControl player; /// Assign your PlayerControl script in Inspector
 
     void Update()
     {
@@ -23,7 +29,7 @@ public class ParanoiaMeter : MonoBehaviour
     }
 
     // Call this when the player picks up an item
-    public void IncreaseParanoia()
+    public void IncreaseParanoia() /// Increase the player's paranoia level
     {
         paranoia = Mathf.Min(paranoia + paranoiaIncreasePerItem, maxParanoia);
 

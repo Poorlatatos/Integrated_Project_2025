@@ -4,13 +4,19 @@ using System.Collections.Generic;
 
 public class CameraPanSequence : MonoBehaviour
 {
-    public Camera playerCamera; // Assign in Inspector
-    public Transform teleportPosition; // Where to instantly move the camera
-    public Transform panTargetPosition; // Where to slowly pan the camera to
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 28/07/2025
+    * Description: Camera pan sequence script for Unity
+      Controls the panning and teleporting of the camera during specific sequences.
+    */
+    public Camera playerCamera; /// Assign in Inspector
+    public Transform teleportPosition; /// Where to instantly move the camera
+    public Transform panTargetPosition; /// Where to slowly pan the camera to
     public float panDuration = 2f;
-    public Transform playerCameraParent; // The original parent (e.g. player's head/camera holder)
-    public Vector3 playerCameraLocalPos; // The original local position
-    public Quaternion playerCameraLocalRot; // The original local rotation
+    public Transform playerCameraParent; /// The original parent (e.g. player's head/camera holder)
+    public Vector3 playerCameraLocalPos; /// The original local position
+    public Quaternion playerCameraLocalRot; /// The original local rotation
 
     private List<MonoBehaviour> scriptsToRestore = new List<MonoBehaviour>();
     private bool isRunning = false;
@@ -26,7 +32,7 @@ public class CameraPanSequence : MonoBehaviour
             StartCoroutine(PanRoutine());
     }
 
-    IEnumerator PanRoutine()
+    IEnumerator PanRoutine() /// Coroutine for panning the camera
     {
         isRunning = true;
 

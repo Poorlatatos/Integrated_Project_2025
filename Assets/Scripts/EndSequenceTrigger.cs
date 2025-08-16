@@ -5,23 +5,28 @@ using UnityEngine.SceneManagement;
 
 public class EndSequenceTrigger : MonoBehaviour
 {
-    public PlayerControl playerControl;
-    public Camera playerCamera;
-    public Transform playerTransform;
-    public float cameraPanDuration = 2f;
-    public Vector3 cameraOffset = new Vector3(0, 1.5f, -3f);
-    public SceneFader sceneFader;
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 5/08/2025
+    * Description: Triggers the end sequence when the player enters the trigger zone.
+    */
+    public PlayerControl playerControl; /// Reference to the PlayerControl script
+    public Camera playerCamera; /// Reference to the player camera
+    public Transform playerTransform; /// Reference to the player transform
+    public float cameraPanDuration = 2f; /// Duration of the camera pan
+    public Vector3 cameraOffset = new Vector3(0, 1.5f, -3f); /// Offset for the camera position
+    public SceneFader sceneFader; /// Reference to the SceneFader script
     public string nextSceneName;
 
     [Header("Objects to Delete")]
-    public List<GameObject> objectsToDelete; // Assign in Inspector
+    public List<GameObject> objectsToDelete; /// Assign in Inspector
 
     [Header("Objects to Unhide")]
-    public List<GameObject> objectsToUnhide; // Assign in Inspector
+    public List<GameObject> objectsToUnhide; /// Assign in Inspector
 
     private bool hasTriggered = false;
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other) /// Handle trigger events
     {
         if (hasTriggered) return;
         if (other.CompareTag("Player"))
@@ -30,14 +35,13 @@ public class EndSequenceTrigger : MonoBehaviour
             StartCoroutine(EndSequenceRoutine());
         }
     }
-    
-    IEnumerator EndSequenceRoutine()
+
+    IEnumerator EndSequenceRoutine() /// Handle the end sequence
     {
-        // 1. Freeze player movement
+        // Freeze player movement
         if (playerControl != null)
             playerControl.enabled = false;
 
-        // --- DELETE OBJECTS ---
         if (objectsToDelete != null)
         {
             foreach (var obj in objectsToDelete)
@@ -47,14 +51,12 @@ public class EndSequenceTrigger : MonoBehaviour
             }
         }
 
-        // --- DELETE ALL POLICECHASER INSTANCES ---
         foreach (var enemy in FindObjectsOfType<PoliceChaser>())
         {
             if (enemy != null)
                 Destroy(enemy.gameObject);
         }
 
-        // --- UNHIDE OBJECTS ---
         if (objectsToUnhide != null)
         {
             foreach (var obj in objectsToUnhide)
@@ -64,7 +66,7 @@ public class EndSequenceTrigger : MonoBehaviour
             }
         }
 
-        // 2. Pan camera behind player
+        // Pan camera behind player
         Vector3 startPos = playerCamera.transform.position;
         Quaternion startRot = playerCamera.transform.rotation;
         Vector3 targetPos = playerTransform.position + playerTransform.TransformDirection(cameraOffset);
@@ -82,7 +84,7 @@ public class EndSequenceTrigger : MonoBehaviour
         playerCamera.transform.position = targetPos;
         playerCamera.transform.rotation = targetRot;
 
-        // 3. Fade to black
+        // Fade to black
         if (sceneFader != null)
         {
             yield return sceneFader.FadeAndSwitchSceneCoroutine(nextSceneName);

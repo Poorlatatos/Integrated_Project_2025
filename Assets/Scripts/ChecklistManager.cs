@@ -7,19 +7,24 @@ using System.Collections;
 
 public class ChecklistManager : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 8/08/2025
+    * Description: Manages the player's checklist UI, allowing them to track collected items.
+    */
     public DoorOpener doorToOpen;
-    public CanvasGroup checklistCanvasGroup; // Assign the CanvasGroup of ChecklistPanel
-    public Transform checklistContent;       // Assign ChecklistContent (the Vertical Layout Group)
-    public GameObject checklistItemPrefab;   // Assign the ChecklistItem prefab (with TextMeshProUGUI)
+    public CanvasGroup checklistCanvasGroup; /// Assign the CanvasGroup of ChecklistPanel
+    public Transform checklistContent;       /// Assign ChecklistContent (the Vertical Layout Group)
+    public GameObject checklistItemPrefab;   /// Assign the ChecklistItem prefab (with TextMeshProUGUI)
     public bool IsChecklistOpen => checklistCanvasGroup != null && checklistCanvasGroup.alpha > 0.5f;
 
-    private Dictionary<string, TextMeshProUGUI> itemToText = new Dictionary<string, TextMeshProUGUI>();
+    private Dictionary<string, TextMeshProUGUI> itemToText = new Dictionary<string, TextMeshProUGUI>(); /// Maps item names to their UI text elements
     private InputAction toggleAction;
 
     // For sliding animation
-    public RectTransform checklistPanelRect; // Assign the RectTransform of ChecklistPanel
-    public Vector2 hiddenPosition = new Vector2(0, -400); // Off-screen (adjust as needed)
-    public Vector2 shownPosition = new Vector2(0, 0);     // On-screen (adjust as needed)
+    public RectTransform checklistPanelRect; /// Assign the RectTransform of ChecklistPanel
+    public Vector2 hiddenPosition = new Vector2(0, -400); /// Off-screen (adjust as needed)
+    public Vector2 shownPosition = new Vector2(0, 0);     /// On-screen (adjust as needed)
     public float slideDuration = 0.4f;
     private Coroutine slideCoroutine;
 
@@ -45,7 +50,7 @@ public class ChecklistManager : MonoBehaviour
         toggleAction.Disable();
     }
 
-    void ToggleChecklist()
+    void ToggleChecklist() /// Handle checklist visibility
     {
         bool show = checklistCanvasGroup.alpha == 0;
         if (slideCoroutine != null) StopCoroutine(slideCoroutine);
@@ -54,7 +59,7 @@ public class ChecklistManager : MonoBehaviour
         checklistCanvasGroup.blocksRaycasts = show;
     }
 
-    private IEnumerator SlideChecklist(bool show)
+    private IEnumerator SlideChecklist(bool show) /// Handle checklist sliding animation
     {
         checklistCanvasGroup.alpha = 1; // Always visible during animation
         Vector2 start = checklistPanelRect.anchoredPosition;
@@ -72,7 +77,7 @@ public class ChecklistManager : MonoBehaviour
     }
 
     // Called by RandomItemSpawner after spawning items
-    public void PopulateChecklist(GameObject[] items)
+    public void PopulateChecklist(GameObject[] items) /// Populate the checklist with new items
     {
         foreach (Transform child in checklistContent)
             Destroy(child.gameObject);
@@ -88,7 +93,7 @@ public class ChecklistManager : MonoBehaviour
     }
 
     // Call this when an item is picked up
-    public void CrossOffItem(string itemName)
+    public void CrossOffItem(string itemName) /// Cross off an item in the checklist
     {
         Debug.Log("Trying to cross off: " + itemName);
         if (itemToText.TryGetValue(itemName, out TextMeshProUGUI text))
@@ -108,7 +113,7 @@ public class ChecklistManager : MonoBehaviour
         }
     }
 
-    public void RegisterAndCrossOff(string itemName)
+    public void RegisterAndCrossOff(string itemName) /// Register and cross off an item in the checklist
     {
         // If not already on the checklist, add it
         if (!itemToText.ContainsKey(itemName))
@@ -122,7 +127,7 @@ public class ChecklistManager : MonoBehaviour
         CrossOffItem(itemName);
     }
 
-    public bool AreAllItemsCollected()
+    public bool AreAllItemsCollected() /// Check if all items are collected
     {
         foreach (var text in itemToText.Values)
         {

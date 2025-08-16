@@ -3,25 +3,32 @@ using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 24/07/2025
+    * Description: Player control script for Unity
+      Controls the behavior of the player character, including movement, jumping, and crouching.
+    */
+
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float jumpForce = 5f;
+    public float moveSpeed = 5f; /// Speed of the player movement
+    public float jumpForce = 5f; /// Force applied when the player jumps
 
     Vector2 moveInput;
     Rigidbody rb;
     public Transform cameraTransform;
 
     [Header("Crouch Settings")]
-    public float crouchHeight = 0.6f;
-    public float standingHeight = 1.8f;
-    public float crouchSpeed = 2f;
+    public float crouchHeight = 0.6f; /// Height of the player when crouching
+    public float standingHeight = 1.8f; /// Height of the player when standing
+    public float crouchSpeed = 2f; /// Speed of the player when crouching
     CapsuleCollider capsuleCollider;
     bool isCrouching = false;
 
     [Header("Sprint Settings")]
-    public float sprintSpeed = 8f;
-    public float sprintDuration = 3f; // seconds of sprint available
-    public float sprintRechargeRate = 1f; // seconds to recharge 1 second of sprint
+    public float sprintSpeed = 8f; /// Speed of the player when sprinting
+    public float sprintDuration = 3f; /// Seconds of sprint available
+    public float sprintRechargeRate = 1f; /// Seconds to recharge 1 second of sprint
     public float sprintTimer;
     public bool isSprinting = false;
 
@@ -85,12 +92,12 @@ public class PlayerControl : MonoBehaviour
 
     }
 
-    public void OnMove(InputValue value)
+    public void OnMove(InputValue value) /// Handle player movement input
     {
         moveInput = value.Get<Vector2>();
     }
 
-    public void OnJump(InputValue value)
+    public void OnJump(InputValue value) /// Handle player jump input
     {
         if (value.isPressed && Mathf.Abs(rb.linearVelocity.y) < 0.01f)
         {
@@ -98,7 +105,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void OnCrouch(InputValue value)
+    public void OnCrouch(InputValue value) /// Handle player crouch input
     {
         if (value.isPressed && !isCrouching)
         {
@@ -118,7 +125,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    public void OnSprint(InputValue value)
+    public void OnSprint(InputValue value) /// Handle player sprint input
     {
         isSprinting = value.isPressed && sprintTimer > 0f;
     }

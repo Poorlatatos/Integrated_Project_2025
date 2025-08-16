@@ -2,11 +2,17 @@ using UnityEngine;
 
 public class DoorOpener : MonoBehaviour
 {
-    public Transform leftDoor;   // Assign the left door panel
-    public Transform rightDoor;  // Assign the right door panel
-    public Vector3 leftOpenRotation = new Vector3(0, -90, 0);  // Left door swings left
-    public Vector3 rightOpenRotation = new Vector3(0, 90, 0);  // Right door swings right
-    public float openDuration = 1.5f;
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Door opener script for Unity
+      When the player finished collecting all items in the checklist, it will open the doors
+    */
+    public Transform leftDoor;   /// Assign the left door panel
+    public Transform rightDoor;  /// Assign the right door panel
+    public Vector3 leftOpenRotation = new Vector3(0, -90, 0);  /// Left door swings left
+    public Vector3 rightOpenRotation = new Vector3(0, 90, 0);  /// Right door swings right
+    public float openDuration = 1.5f; /// Duration for doors to fully open
 
     private Quaternion leftClosedRot, leftOpenRot;
     private Quaternion rightClosedRot, rightOpenRot;
@@ -26,7 +32,7 @@ public class DoorOpener : MonoBehaviour
         }
     }
 
-    public void OpenDoor()
+    public void OpenDoor() /// Open the door
     {
         if (!isOpen)
         {
@@ -35,7 +41,7 @@ public class DoorOpener : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator OpenDoorRoutine()
+    private System.Collections.IEnumerator OpenDoorRoutine() /// Handle door opening animation
     {
         float timer = 0f;
         while (timer < openDuration)

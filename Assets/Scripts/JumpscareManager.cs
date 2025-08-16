@@ -3,20 +3,27 @@ using UnityEngine.SceneManagement;
 
 public class JumpscareManager : MonoBehaviour
 {
+    /*
+    * Author: Jaasper Lee Zong Hng
+    * Date: 1/08/2025
+    * Description: Jumpscare manager script for Unity
+      Controls the behavior of jumpscares, including camera shaking and UI display.
+    */
+
     public Camera playerCamera;
-    public float shakeDuration = 1f;
-    public float shakeMagnitude = 0.5f;
-    public GameObject jumpscareUI; // Assign a UI panel or image for jumpscare
-    public MonoBehaviour playerControlScript; // Assign the movement script in the Inspector
-    public MonoBehaviour cameraLookScript;
-    public Transform enemyTransform; // Assign an enemy transform to shake camera towards
+    public float shakeDuration = 1f; /// Duration of the shake
+    public float shakeMagnitude = 0.5f; /// Magnitude of the shake
+    public GameObject jumpscareUI; /// Assign a UI panel or image for jumpscare
+    public MonoBehaviour playerControlScript; /// Assign the movement script in the Inspector
+    public MonoBehaviour cameraLookScript; /// Assign the camera look script in the Inspector
+    public Transform enemyTransform; /// Assign an enemy transform to shake camera towards
     private Vector3 originalCamPos;
     private bool isShaking = false;
     private float shakeTimer = 0f;
 
     [Header("Jumpscare Audio")]
-    public AudioSource jumpscareAudioSource; // Assign in Inspector
-    public AudioClip jumpscareClip; // Assign in Inspector
+    public AudioSource jumpscareAudioSource; /// Assign in Inspector
+    public AudioClip jumpscareClip; /// Assign in Inspector
 
     void Start()
     {
@@ -26,7 +33,7 @@ public class JumpscareManager : MonoBehaviour
             jumpscareUI.SetActive(false);
     }
 
-    public void TriggerJumpscare()
+    public void TriggerJumpscare() /// Trigger the jumpscare sequence
     {
         if (isShaking) return;
         if (jumpscareUI != null)
@@ -82,7 +89,7 @@ public class JumpscareManager : MonoBehaviour
         }
     }
 
-    void GameOver()
+    void GameOver() /// Handle game over state
     {
         // Optionally: show game over UI, reload scene, etc.
         // For now, reload the current scene:
